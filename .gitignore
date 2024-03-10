@@ -14,7 +14,7 @@
 [Dd]ebug/
 [Dd]ebugPublic/
 ## [Rr]elease/
-[Rr]eleases/
+## [Rr]eleases/
 x64/
 x86/
 bld/
@@ -351,3 +351,8 @@ Exchange/release/
 /ExChange/ExChange.vcxproj
 /ExChange/SQL.h
 /ExChange/ExChange.vcxproj.filters
+/release/*.exp
+/release/*.ipobj
+/release/*.ipdb
+/release/*.lib
+/release/*.pdb
