@@ -357,5 +357,4 @@ Exchange/release/
 /release/*.lib
 /release/*.pdb
 AdvancedOptions.ini
-*.sln
 
