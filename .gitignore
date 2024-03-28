@@ -295,8 +295,8 @@ Exchange/GmEvents.cpp
 Exchange/GmEvents.h
 Exchange/GMSystem.cpp
 Exchange/GMSystem.h
-Exchange/ImperiumMap.cpp
-Exchange/ImperiumMap.h
+# Exchange/ImperiumMap.cpp
+# Exchange/ImperiumMap.h
 Exchange/Init.cpp
 Exchange/Licence.cpp
 Exchange/Licence.h
