@@ -89,8 +89,10 @@ public:
 	struct SalaOito : Room
 	{
 		int mobDefenseRate[2];
+		int mobDeadTime;
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
 		void AttackFunc(LPOBJ lpObj, LPOBJ lpTarget);
+		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
 	}sala8;
 
 	struct SalaNove : Room
@@ -100,9 +102,11 @@ public:
 		int countMob[1000], countMobConfig;
 		int itemReq[4];
 		int bossDelTime;
-		void BossDeath(LPOBJ lpObj);
+		bool DeadBoss[1000];
+		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
 		void BossDeathClear();
 		void BossRespawn(LPOBJ lpObj, LPOBJ lpMob);
+		void Gate(int aIndex, int gate);
 	}sala9;
 
 	struct SalaDez : Room

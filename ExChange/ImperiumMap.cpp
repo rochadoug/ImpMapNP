@@ -387,7 +387,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 						MsgOutput(Id, "[Sala %d] Você concluiu a missão nesta sala", Room);
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 2;
-						YellowWhispSend("Sala 01", Id, "Avançou para Sala: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 01", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
 					}
 				}
 			}
@@ -409,7 +409,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 						MsgOutput(Id, "[Sala %02d] Você concluiu a missão nesta sala", Room);
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 3;
-						YellowWhispSend("Sala 02", Id, "Avançou para Sala: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 02", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
 					}
 				}
 			}
@@ -431,7 +431,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 						MsgOutput(Id, "[Sala %02d] Você concluiu a missão nesta sala", Room);
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 4;
-						YellowWhispSend("Sala 03", Id, "Avançou para Sala: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 03", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
 					}
 				}
 			}
@@ -897,7 +897,16 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 			}
 
 			if (impMap.sPlayer[Id].RoomLevel == 8) {
-				for (int m = 0; m < 5800; m++) {
+
+				if (impMap.sala8.mobDeadTime > 0) {
+					NpcOutput(lpNpc->m_Index, Id, "Acabe com os 3 monstros de uma vez");
+					
+				}
+				else {
+					impMap.Move(lpObj, 9); // Go sala 9
+				}
+				return TRUE;
+			/*	for (int m = 0; m < 5800; m++) {
 					LPOBJ lpMob = &gObj[m];
 					if (lpMob->Type == OBJ_MONSTER) {
 						if (lpMob->Class == 161 && lpMob->Live != FALSE) {
@@ -911,8 +920,8 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 							return TRUE;
 						}
 					}
-				}
-				return TRUE;
+				} */
+				
 			}
 			
 		}
@@ -944,14 +953,31 @@ void ImperiumMap::SalaOito::AttackFunc(LPOBJ lpObj, LPOBJ lpTarget)
 	}
 }
 
-void ImperiumMap::SalaNove::BossDeath(LPOBJ lpObj)
+void ImperiumMap::SalaOito::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 {
+	int Id = lpObj->m_Index;
+
 	if (lpObj->Map == 18) {
+		if (lpMonster->Class == 161) {
+			if (impMap.sala8.mobDeadTime == 0) {
+				impMap.sala8.mobDeadTime = 60;
+				YellowWhispSend("Sala 8", lpObj->m_Index, "1 minuto para ir para próxima sala");
+			}
+		}
+	}
+}
+void ImperiumMap::SalaNove::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
+{
 
-		if (lpObj->Class == impMap.sala9.bossId) {
+	if (lpMonster->Map == 18) {
+		int Id = lpObj->m_Index;
+
+		if (lpMonster->Class == impMap.sala9.bossId) {
 			impMap.sala9.bossDelTime = 6;
+			impMap.sala9.DeadBoss[Id] = true;
+			
 			MapAnnounce(18, "[Sala 9] Boss  eliminado!");
-
+			YellowWhispSend("Sala 9", lpObj->m_Index, "Pode ir para a sala 10!");
 		}
 	}
 }
@@ -997,5 +1023,40 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 			}*/
 		}
 		
+	}
+}
+
+void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
+{
+	LPOBJ lpObj = &gObj[aIndex];
+
+	if (gate == 84) {
+		if (impMap.sala9.DeadBoss[aIndex] == false) {
+
+			short x = lpObj->X;
+			short y = lpObj->Y;
+			BYTE mapNumber = lpObj->Map;
+			BYTE dir = lpObj->Dir;
+
+
+			lpObj->RegenMapNumber = lpObj->Map;
+			lpObj->RegenMapX = x;
+			lpObj->RegenMapY = y;
+			gObjClearViewport(&gObj[aIndex]);
+			GCTeleportSend(&gObj[aIndex], gate, mapNumber, gObj[aIndex].X, gObj[aIndex].Y, gObj[aIndex].Dir);
+
+			if (lpObj->m_Change >= 0)
+			{
+				gObjViewportListProtocolCreate(&gObj[aIndex]);
+			}
+
+			gObj[aIndex].RegenOk = 1;
+			MsgOutput(aIndex, "Você não matou o boss 9 ainda");
+
+		}
+		else {
+			impMap.sPlayer[aIndex].RoomLevel = 10;
+			impMap.sala9.DeadBoss[aIndex] = false;
+		}
 	}
 }
