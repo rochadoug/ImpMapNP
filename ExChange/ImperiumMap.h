@@ -7,16 +7,12 @@ public:
 	ImperiumMap();
 	~ImperiumMap();
 
-	//enum rooms
-	//{
-	//	_sala1 = 1,_sala2,_sala3,_sala4,_sala5,_sala6,_sala7,_sala8,_sala9,_sala10
-	//};
-
 	struct Player 
 	{
 		long long mobKills;
 		long long bossKills;
 		int RoomLevel;
+		long long rankPoints;
 	}sPlayer[1000];
 
 	struct Room
@@ -122,7 +118,6 @@ public:
 	BOOL RoomNPC(LPOBJ lpNpc, LPOBJ lpObj);
 	void RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj);
 	int GetCurRoom(LPOBJ lpObj);
-	BOOL AttackGerence(LPOBJ lpNpc, LPOBJ lpObj);
 	void configGeral();
 	void ChargeConfig();
 	void PlayerEnterGame(LPOBJ lpObj, BYTE modo);

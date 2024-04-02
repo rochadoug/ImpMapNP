@@ -497,6 +497,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 		}
 		if(Room == 8){
 			if (sPlayer[Id].RoomLevel == Room) {
+				
 			}
 		}
 		if(Room == 9){
@@ -547,12 +548,7 @@ int ImperiumMap::GetCurRoom(LPOBJ lpObj){
 	return -1;
 }
 
-BOOL ImperiumMap::AttackGerence(LPOBJ lpObj, LPOBJ lpTarg)
-{
-	int Id = lpObj->m_Index;
-		
-	return TRUE;
-}
+
 
 BOOL ImperiumMap::SalaTres::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 {
@@ -593,7 +589,6 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 	int Id = lpObj->m_Index;
 	bool naoPassa = false;
 
-	
 	if (lpObj->Map == 18) {
 		if (lpNpc->Class == impMap.sala4.NpcId.at(0)) { // Stone Head
 			if (impMap.sPlayer[Id].RoomLevel < 4 || naoPassa) {
@@ -611,11 +606,7 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					this->quantMobToSort[Id] = 0;
 					//DeleteItemInventory(lpObj, ITEMGET(14, 22), 0, impMap.sala3.qtdCreation); // apaga creation
 				}
-				/*else {
-					gObjTeleport(Id, 18, impMap.sala4.RespX[1], impMap.sala4.RespY[1]);
-					this->isCompleteQuest[Id] = false;
-					this->quantMobToSort[Id] = 0;
-				}*/
+
 			}
 			return TRUE;
 		}
@@ -680,15 +671,6 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					NpcOutput(lpNpc->m_Index, Id, "Ainda há algo a fazer");
 				}
 			}
-			//NpcOutput(lpNpc->m_Index, Id, "Room level %d", impMap.sPlayer[Id].RoomLevel);
-			/*else if (impMap.sPlayer[Id].RoomLevel > 4 && impMap.sPlayer[Id].RoomLevel < 7) {
-				impMap.sPlayer[Id].RoomLevel = 4;
-				//NpcOutput(lpNpc->m_Index, Id, "Terá de refazer a quest para voltar");	
-				ChatSendMaster("Sala 04", "Terá que refazer a quest", Id);
-				if (lpObj->Y > lpNpc->Y) {
-					gObjTeleport(Id, 18, impMap.sala4.RespX[3], impMap.sala4.RespY[3]);
-				}
-			}*/
 			return TRUE;
 		}
 	}
@@ -810,19 +792,11 @@ BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				sortKey[0] = {0, 1, 2, 3, 4, 5};
 				sortKey[1] = {5, 4, 3, 2, 1, 0};
 				sortKey[2] = {2, 1, 0, 5, 4, 3};
-				//sortKey[3] = {3, 4, 5, 0, 1, 2};
-				//sortKey[4] = {1, 3, 5, 0, 2, 4};
-				
 
 				int mKey = rand() % 3;
 				impMap.sala7.secretKey = sortKey[mKey];
 				MapMsgOutput(18, "Chave sorteada %d", mKey);  // Não esquecer de tirar
 			}
-			/*else {
-				gObjTeleport(Id, 18, impMap.sala6.RespX[1], impMap.sala6.RespY[1]);
-				impMap.sPlayer[Id].RoomLevel--;
-				impMap.sala7.secretKey.clear();
-			}*/
 		}
 	}
 	return 1;
@@ -847,8 +821,6 @@ BOOL ImperiumMap::SalaSete::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				if (!this->secretKey.empty() && !this->playerKey[Id].empty()) {
 					if (this->secretKey == this->playerKey[Id]) {
 						impMap.sPlayer[Id].RoomLevel = 8;
-						//NpcOutput(lpNpc->m_Index, Id, "SEGREDO %d%d%d%d%d%d RESOLVIDO", this->secretKey[0], this->secretKey[1], this->secretKey[2], this->secretKey[3], this->secretKey[4], this->secretKey[5]);
-						//YellowWhispSend("Sala 07", Id, "SEGREDO %d%d%d%d%d%d RESOLVIDO", this->playerKey[Id].at(0), this->playerKey[Id].at(1), this->playerKey[Id].at(2), this->playerKey[Id].at(3), this->playerKey[Id].at(4), this->playerKey[Id].at(5));
 						YellowWhispSend("Sala 07", Id, "SEGREDO RESOLVIDO");
 						impMap.Move(lpObj, 8); // Go sala 8
 						this->playerKey[Id].clear();
@@ -858,9 +830,7 @@ BOOL ImperiumMap::SalaSete::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 						this->playerKey[Id].clear();
 					}
 					else {
-						//NpcOutput(lpNpc->m_Index, Id, "SEQUÊNCIA ERRADA %d%d%d%d%d%d", this->secretKey[0], this->secretKey[1], this->secretKey[2], this->secretKey[3], this->secretKey[4], this->secretKey[5]);
 						YellowWhispSend("Sala 07", Id, "SEQUÊNCIA ERRADA");
-						//YellowWhispSend("Sala 07", Id, "Sua Chave: %d%d%d%d%d%d", this->playerKey[Id].at(0), this->playerKey[Id].at(1), this->playerKey[Id].at(2), this->playerKey[Id].at(3), this->playerKey[Id].at(4), this->playerKey[Id].at(5));
 						impMap.Move(lpObj,5); //Volta pra sala 5
 						this->playerKey[Id].clear();
 					}
@@ -869,11 +839,6 @@ BOOL ImperiumMap::SalaSete::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					NpcOutput(lpNpc->m_Index, Id, "RESOLVA O SEGREDO");
 				}
 			}
-			/*else {
-				gObjTeleport(Id, 18, impMap.sala6.RespX[0], impMap.sala6.RespY[0]);
-				impMap.sPlayer[Id].RoomLevel--;
-				impMap.sala7.secretKey.clear();
-			}*/
 		}
 	}
 	return 1;
@@ -883,7 +848,6 @@ BOOL ImperiumMap::SalaSete::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 {
 	int Id = lpObj->m_Index;
-
 
 	if (lpObj->Map == 18) {
 		if (lpNpc->Class == impMap.sala8.NpcId.at(0)) { // Lion door
@@ -898,9 +862,8 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 
 			if (impMap.sPlayer[Id].RoomLevel == 8) {
 
-				if (impMap.sala8.mobDeadTime > 0) {
-					NpcOutput(lpNpc->m_Index, Id, "Acabe com os 3 monstros de uma vez");
-					
+				if (impMap.sala8.mobDeadTime <= 1) {
+					NpcOutput(lpNpc->m_Index, Id, "Acabe com os 3 monstros de uma vez");	
 				}
 				else {
 					impMap.Move(lpObj, 9); // Go sala 9
@@ -922,11 +885,24 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					}
 				} */
 				
-			}
-			
+			}		
 		}
 	}
 	return FALSE;
+}
+
+void ImperiumMap::SalaOito::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
+{
+	int Id = lpObj->m_Index;
+
+	if (lpObj->Map == 18) {
+		if (lpMonster->Class == 161) {
+			if (impMap.sala8.mobDeadTime == 0) {
+				impMap.sala8.mobDeadTime = 60;
+				YellowWhispSend("Sala 8", lpObj->m_Index, "1 minuto para ir para próxima sala");
+			}
+		}
+	}
 }
 
 void ImperiumMap::SalaOito::AttackFunc(LPOBJ lpObj, LPOBJ lpTarget)
@@ -953,19 +929,7 @@ void ImperiumMap::SalaOito::AttackFunc(LPOBJ lpObj, LPOBJ lpTarget)
 	}
 }
 
-void ImperiumMap::SalaOito::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
-{
-	int Id = lpObj->m_Index;
 
-	if (lpObj->Map == 18) {
-		if (lpMonster->Class == 161) {
-			if (impMap.sala8.mobDeadTime == 0) {
-				impMap.sala8.mobDeadTime = 60;
-				YellowWhispSend("Sala 8", lpObj->m_Index, "1 minuto para ir para próxima sala");
-			}
-		}
-	}
-}
 void ImperiumMap::SalaNove::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 {
 
@@ -1032,13 +996,10 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 
 	if (gate == 84) {
 		if (impMap.sala9.DeadBoss[aIndex] == false) {
-
 			short x = lpObj->X;
 			short y = lpObj->Y;
 			BYTE mapNumber = lpObj->Map;
 			BYTE dir = lpObj->Dir;
-
-
 			lpObj->RegenMapNumber = lpObj->Map;
 			lpObj->RegenMapX = x;
 			lpObj->RegenMapY = y;
@@ -1049,14 +1010,18 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 			{
 				gObjViewportListProtocolCreate(&gObj[aIndex]);
 			}
-
 			gObj[aIndex].RegenOk = 1;
 			MsgOutput(aIndex, "Você não matou o boss 9 ainda");
-
 		}
 		else {
 			impMap.sPlayer[aIndex].RoomLevel = 10;
 			impMap.sala9.DeadBoss[aIndex] = false;
+			impMap.sPlayer[aIndex].rankPoints++;
+			int iTeleport = ITEMGET(14, 10);
+			ItemSerialCreateSend(aIndex, 18, 213, 204, iTeleport, 12, 0, 0, 0, 0, aIndex, 0);
+			MapAnnounce(18, "[Sala 10] %s Finalizou as quests do mapa!", lpObj->Name);
+			MySQL.ExecQuery("UPDATE Character SET ImpMapRank = ImpMapRank + 1 where Name = '%s'", lpObj->Name);
+			MySQL.Fetch();
 		}
 	}
 }
