@@ -899,7 +899,7 @@ void ImperiumMap::SalaOito::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 		if (lpMonster->Class == 161) {
 			if (impMap.sala8.mobDeadTime == 0) {
 				impMap.sala8.mobDeadTime = 60;
-				YellowWhispSend("Sala 8", lpObj->m_Index, "1 minuto para ir para próxima sala");
+				YellowWhispSend("Sala 8", lpObj->m_Index, "Você tem 1 minuto para ir para sala 9");
 			}
 		}
 	}
@@ -969,7 +969,7 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 
 	if (lpObj->Map == 18) {
 		if (lpMob->Class != impMap.sala9.bossId) {
-			if (impMap.sala9.bossIndex == -1) {
+			if (impMap.sala9.bossIndex == -1 && impMap.sala9.DeadBoss[Id] == false) {
 				impMap.sala9.countMob[Id]++;
 
 				if (impMap.sala9.countMob[Id] >= impMap.sala9.countMobConfig) {
@@ -978,15 +978,7 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 					MapAnnounce(18, "[Sala 9] Boss apareceu!!");
 				}
 			}
-		}
-		else {
-			/*if (impMap.sala9.bossIndex != -1) {
-				//gObjDel(impMap.sala9.bossIndex);
-				impMap.sala9.bossIndex = -1;
-				MapAnnounce(18, "[Sala 9] Boss  eliminado!");
-			}*/
-		}
-		
+		}	
 	}
 }
 
@@ -1006,12 +998,33 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 			gObjClearViewport(&gObj[aIndex]);
 			GCTeleportSend(&gObj[aIndex], gate, mapNumber, gObj[aIndex].X, gObj[aIndex].Y, gObj[aIndex].Dir);
 
-			if (lpObj->m_Change >= 0)
-			{
+			if (lpObj->m_Change >= 0){
 				gObjViewportListProtocolCreate(&gObj[aIndex]);
 			}
 			gObj[aIndex].RegenOk = 1;
 			MsgOutput(aIndex, "Você não matou o boss 9 ainda");
+		}
+		else if (impMap.sala9.itemReq[0] > 0 && CheckInventory(aIndex, ITEMGET(impMap.sala9.itemReq[1], impMap.sala9.itemReq[2]), impMap.sala9.itemReq[3]) < impMap.sala9.itemReq[0]) {
+			short x = lpObj->X;
+			short y = lpObj->Y;
+			BYTE mapNumber = lpObj->Map;
+			BYTE dir = lpObj->Dir;
+			lpObj->RegenMapNumber = lpObj->Map;
+			lpObj->RegenMapX = x;
+			lpObj->RegenMapY = y;
+			gObjClearViewport(&gObj[aIndex]);
+			GCTeleportSend(&gObj[aIndex], gate, mapNumber, gObj[aIndex].X, gObj[aIndex].Y, gObj[aIndex].Dir);
+
+			if (lpObj->m_Change >= 0) {
+				gObjViewportListProtocolCreate(&gObj[aIndex]);
+			}
+			gObj[aIndex].RegenOk = 1;
+
+			CItem item;
+			item.m_Type = ITEMGET(impMap.sala9.itemReq[1], impMap.sala9.itemReq[2]);
+			item.m_Level = impMap.sala9.itemReq[3];
+
+			MsgOutput(aIndex, "Precisa de %d %s item", impMap.sala9.itemReq[0], item.GetName());
 		}
 		else {
 			impMap.sPlayer[aIndex].RoomLevel = 10;
@@ -1019,7 +1032,7 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 			impMap.sPlayer[aIndex].rankPoints++;
 			int iTeleport = ITEMGET(14, 10);
 			ItemSerialCreateSend(aIndex, 18, 213, 204, iTeleport, 12, 0, 0, 0, 0, aIndex, 0);
-			MapAnnounce(18, "[Sala 10] %s Finalizou as quests do mapa!", lpObj->Name);
+			AllServerAnnounce("[Mapa Imperium] %s Finalizou todas as quests!", lpObj->Name);
 			MySQL.ExecQuery("UPDATE Character SET ImpMapRank = ImpMapRank + 1 where Name = '%s'", lpObj->Name);
 			MySQL.Fetch();
 		}
