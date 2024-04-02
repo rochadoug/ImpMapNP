@@ -754,14 +754,14 @@ void ImperiumMap::SalaSeis::DragonDoorProc()
 	if (this->second >= (this->timeToOpen * 60)) {
 		this->timeOpend = this->timeToClose * 60; //300seg = 5min
 		this->second = 0;
-		MapMsgOutput(18, "DragonDoor aberta por %d min", impMap.sala6.timeToClose);
+		MapMsgOutput(18, "[Sala 6] DragonDoor aberta");
 	}
 
 	if (this->timeOpend > 0)
 		this->timeOpend--;
 
 	if(this->timeOpend == 1)
-		MapMsgOutput(18,"DragonDoor fechada");
+		MapMsgOutput(18,"[Sala 6] DragonDoor fechada");
 }
 
 BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
@@ -795,7 +795,7 @@ BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 
 				int mKey = rand() % 3;
 				impMap.sala7.secretKey = sortKey[mKey];
-				MapMsgOutput(18, "Chave sorteada %d", mKey);  // Não esquecer de tirar
+				//MapMsgOutput(18, "Chave sorteada %d", mKey);  // Não esquecer de tirar
 			}
 		}
 	}
@@ -869,22 +869,6 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					impMap.Move(lpObj, 9); // Go sala 9
 				}
 				return TRUE;
-			/*	for (int m = 0; m < 5800; m++) {
-					LPOBJ lpMob = &gObj[m];
-					if (lpMob->Type == OBJ_MONSTER) {
-						if (lpMob->Class == 161 && lpMob->Live != FALSE) {
-							NpcOutput(lpNpc->m_Index, Id, "Acabe com os 3 monstros de uma vez");
-							break;
-							return TRUE;
-						}
-						else if (lpMob->Class == 161 && lpMob->Live == FALSE){
-							impMap.Move(lpObj, 9); // Go sala 9
-							break;
-							return TRUE;
-						}
-					}
-				} */
-				
 			}		
 		}
 	}
@@ -946,6 +930,7 @@ void ImperiumMap::SalaNove::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 	}
 }
 
+//Programando 26/03/2024
 void ImperiumMap::SalaNove::BossDeathClear()
 {
 	if (impMap.sala9.bossDelTime > 0) {
@@ -982,6 +967,7 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 	}
 }
 
+//Programando 02/04/2024 20:30
 void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 {
 	LPOBJ lpObj = &gObj[aIndex];
