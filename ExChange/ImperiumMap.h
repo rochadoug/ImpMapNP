@@ -52,8 +52,10 @@ public:
 		bool isCompleteQuest[1000];
 		bool canActivateDisp[1000];
 		int itemPremio[8];
+		int device, deviceSec;
+		vector<vector<int>> deviceXY;
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
-
+		void SetDevice();
 	}sala4;
 
 	struct SalaCinco : Room
@@ -62,7 +64,7 @@ public:
 		bool killedBoss;
 		int hp, attackDmg, attackRate, defenseRate, defense,magicDefense;
 		int hpConf, attackDmgConf, attackRateConf, defenseRateConf, defenseConf, magicDefenseConf, regenTimeConf;
-		void setBridgeGuardStrong(bool k);
+		void setBridgeGuardStrong(char k);
 		void setBossStrong(int aIndex, int mobid);
 		enum {enBoss, enGuard};
 	}sala5;

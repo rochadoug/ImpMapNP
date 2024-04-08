@@ -38,6 +38,10 @@ void ImperiumMap::configGeral(){
 	sala4.itemPremio[6] = 0;	//Opt
 	sala4.itemPremio[7] = 0;	//Exc
 	sala4.sortQuestValue = 10; // Valor para o rand para q possa consertar o broken device
+	sala4.deviceXY = { {106,83}, {110,88},{106,96}, 
+	{119, 83}, {119, 88}, {119, 94},  
+	{129, 88}, {129, 95}, {140, 82}, {146, 89}, {140, 97},
+	{152, 82},{151, 90}, {148, 97}, {157, 93}, };
 	
 	//Configs da sala 5 (Não possui)
 
@@ -267,7 +271,7 @@ bool ImperiumMap::Move(LPOBJ lpObj, BYTE pos, short lvl)
 	else if (lvl == 1) {
 		sPlayer[Id].RoomLevel = 5;
 		impMap.sala5.killedBoss = false;
-		impMap.sala5.setBridgeGuardStrong(false);
+		impMap.sala5.setBridgeGuardStrong(0);  // imortais
 
 		int mX, mY, x1 = 162, y1 = 104, x2 = 170, y2 = 105;
 		mX = (x2 - x1) > 0 ? min(x1, x2) + rand() % (max(x1, x2) - min(x1, x2)) : 0;
@@ -294,7 +298,7 @@ bool ImperiumMap::Move(LPOBJ lpObj, short lvl)
 		case 5: {
 			sPlayer[Id].RoomLevel = 5;
 			impMap.sala5.killedBoss = false;
-			impMap.sala5.setBridgeGuardStrong(false);
+			impMap.sala5.setBridgeGuardStrong(0); // imortais
 			x1 = 162, y1 = 104, x2 = 170, y2 = 105;
 		}break;
 		case 6: break;
@@ -375,7 +379,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 
 					if (sala1.mobQtd > 0 && sPlayer[Id].mobKills < sala1.mobQtd) {
 						sPlayer[Id].mobKills++;
-						MsgOutput(Id, "[Sala %02d] Monstros mortos %lld/%lld", Room, sPlayer[Id].mobKills, sala1.mobQtd);
+						MsgOutput(Id, "[Sala 01] Monstros mortos %lld/%lld", sPlayer[Id].mobKills, sala1.mobQtd);
 
 						if (sPlayer[Id].mobKills == 1) {
 							YellowWhispSend("Sala 01", Id, "Missão iniciada automaticamente");
@@ -384,10 +388,10 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 					}
 
 					if (sPlayer[Id].mobKills == (sala1.mobQtd - 1)) {
-						MsgOutput(Id, "[Sala %d] Você concluiu a missão nesta sala", Room);
+						MsgOutput(Id, "[Sala 01] Você concluiu a missão nesta sala");
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 2;
-						YellowWhispSend("Sala 01", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 01", Id, "Alcançou nível da sala 02");
 					}
 				}
 			}
@@ -397,7 +401,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				if (pObj[Id].mResets > sala1.qReset) {
 					if (sala2.mobQtd > 0 && sPlayer[Id].mobKills < sala2.mobQtd) {
 						sPlayer[Id].mobKills++;
-						MsgOutput(Id, "[Sala %02d] Monstros mortos %lld/%lld", Room, sPlayer[Id].mobKills, sala2.mobQtd);
+						MsgOutput(Id, "[Sala 02] Monstros mortos %lld/%lld", sPlayer[Id].mobKills, sala2.mobQtd);
 
 						if (sPlayer[Id].mobKills == 1) {
 							YellowWhispSend("Sala 02", Id, "Missão iniciada automaticamente");
@@ -406,10 +410,10 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 					}
 
 					if (sPlayer[Id].mobKills == (sala2.mobQtd - 1)) {
-						MsgOutput(Id, "[Sala %02d] Você concluiu a missão nesta sala", Room);
+						MsgOutput(Id, "[Sala 02] Você concluiu a missão nesta sala");
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 3;
-						YellowWhispSend("Sala 02", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 02", Id, "Alcançou nível da sala 03");
 					}
 				}
 			}
@@ -419,7 +423,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				if (pObj[Id].mResets > sala1.qReset) {
 					if (sala3.mobQtd > 0 && sPlayer[Id].mobKills < sala3.mobQtd && lpMob->Class == sala3.mobId) {
 						sPlayer[Id].mobKills++;
-						MsgOutput(Id, "[Sala %02d] Monstros mortos %lld/%lld", Room, sPlayer[Id].mobKills, sala3.mobQtd);
+						MsgOutput(Id, "[Sala 03] Monstros mortos %lld/%lld", sPlayer[Id].mobKills, sala3.mobQtd);
 
 						if (sPlayer[Id].mobKills == 1) {
 							YellowWhispSend("Sala 03", Id, "Missão iniciada automaticamente");
@@ -428,10 +432,10 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 					}
 
 					if (sPlayer[Id].mobKills == (sala3.mobQtd - 1)) {
-						MsgOutput(Id, "[Sala %02d] Você concluiu a missão nesta sala", Room);
+						MsgOutput(Id, "[Sala 03] Você concluiu a missão nesta sala");
 						sPlayer[Id].mobKills = 0;
 						sPlayer[Id].RoomLevel = 4;
-						YellowWhispSend("Sala 03", Id, "Alcançou nível: %02d", sPlayer[Id].RoomLevel);
+						YellowWhispSend("Sala 03", Id, "Alcançou nível da sala 04");
 					}
 				}
 			}
@@ -460,7 +464,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 					MapAnnounce(18,"[Sala 05] Boss eliminado!");
 					this->sala5.killedBoss = true;
 					impMap.sPlayer[Id].RoomLevel = 6;
-					this->sala5.setBridgeGuardStrong(true);
+					this->sala5.setBridgeGuardStrong(1);  // guardas mortais
 				}
 			}
 		}
@@ -490,7 +494,6 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 					}
 					else {
 						MsgOutput(Id, "Código completo, boa sorte!");
-						YellowWhispSend("Sala 07", Id, "%d%d%d%d%d%d", sala7.playerKey[Id].at(0), sala7.playerKey[Id].at(1), sala7.playerKey[Id].at(2), sala7.playerKey[Id].at(3), sala7.playerKey[Id].at(4), sala7.playerKey[Id].at(5));	
 					}
 				}	
 			}
@@ -584,6 +587,13 @@ BOOL ImperiumMap::SalaTres::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 	return FALSE;
 }
 
+void ImperiumMap::SalaQuatro::SetDevice()
+{
+	if (device == -1) {
+		//device = MonsterAdd
+	}
+}
+
 BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 {
 	int Id = lpObj->m_Index;
@@ -665,7 +675,7 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					gObjTeleport(Id, 18, impMap.sala4.RespX[2], impMap.sala4.RespY[2]);
 
 					impMap.sala5.killedBoss = false;
-					impMap.sala5.setBridgeGuardStrong(impMap.sala5.killedBoss);
+					impMap.sala5.setBridgeGuardStrong(0);  // guardas imortais
 				}
 				else {
 					NpcOutput(lpNpc->m_Index, Id, "Ainda há algo a fazer");
@@ -677,14 +687,14 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 	return FALSE;
 }
 
-void ImperiumMap::SalaCinco::setBridgeGuardStrong(bool k) {
+void ImperiumMap::SalaCinco::setBridgeGuardStrong(char k) {
 	
 	for (int m = 0; m < 5800; m++) {
 		LPOBJ lpMonster = &gObj[m];
 
 		if (lpMonster->Class == 154 && lpMonster->Map == 18) {
 
-			if (k == false) {
+			if (k == 0) {
 				
 				//deixo imortal
 				lpMonster->Life = 500000;
@@ -695,7 +705,7 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(bool k) {
 				lpMonster->m_Defense = 30000;
 				lpMonster->m_MagicDefense = 30000;
 			}
-			else if(k == true) {
+			else if(k == 1) {
 				//devolvo o original
 				lpMonster->Life = this->hp;
 				lpMonster->MaxLife = this->hp;
@@ -704,6 +714,14 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(bool k) {
 				lpMonster->m_SuccessfulBlocking = this->defenseRate;
 				lpMonster->m_Defense = this->defense;
 				lpMonster->m_MagicDefense = this->magicDefense;				
+			}
+			else if (k == 2) {
+				this->hp = lpMonster->MaxLife;
+				this->attackDmg = lpMonster->m_AttackDamageMax;
+				this->attackRate = lpMonster->m_AttackRating;
+				this->defenseRate = lpMonster->m_SuccessfulBlocking;
+				this->defense = lpMonster->m_Defense;
+				this->magicDefense = lpMonster->m_MagicDefense;
 			}
 		}
 	}
@@ -724,10 +742,11 @@ void ImperiumMap::SalaCinco::setBossStrong(int aIndex, int mobid)
 				lpMonster->m_Defense = this->defenseConf;
 				lpMonster->m_MagicDefense = this->magicDefenseConf;
 				lpMonster->MaxRegenTime = this->regenTimeConf * 1000;
-				MapAnnounce(18,"[Sala 5] O Boss apareceu");
+				MapAnnounce(18,"[Sala 05] O Boss apareceu");
 		}
 	}
 
+	/* Tirei daqui e coloquei na função acima
 	if (mobid == 154 && lpMonster->Map == 18) {
 		//Salvar força original dos guardas da ponte
 		this->hp = lpMonster->MaxLife;
@@ -736,7 +755,7 @@ void ImperiumMap::SalaCinco::setBossStrong(int aIndex, int mobid)
 		this->defenseRate = lpMonster->m_SuccessfulBlocking;
 		this->defense = lpMonster->m_Defense;
 		this->magicDefense = lpMonster->m_MagicDefense;	
-	}
+	}*/
 
 	//Salvar defesa original das arvores na sala 8
 	if (mobid == 160 && lpMonster->Map == 18) {	
@@ -754,14 +773,14 @@ void ImperiumMap::SalaSeis::DragonDoorProc()
 	if (this->second >= (this->timeToOpen * 60)) {
 		this->timeOpend = this->timeToClose * 60; //300seg = 5min
 		this->second = 0;
-		MapMsgOutput(18, "[Sala 6] DragonDoor aberta");
+		MapMsgOutput(18, "[Sala 06] DragonDoor aberta");
 	}
 
 	if (this->timeOpend > 0)
 		this->timeOpend--;
 
 	if(this->timeOpend == 1)
-		MapMsgOutput(18,"[Sala 6] DragonDoor fechada");
+		MapMsgOutput(18,"[Sala 06] DragonDoor fechada");
 }
 
 BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
@@ -883,7 +902,7 @@ void ImperiumMap::SalaOito::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 		if (lpMonster->Class == 161) {
 			if (impMap.sala8.mobDeadTime == 0) {
 				impMap.sala8.mobDeadTime = 60;
-				YellowWhispSend("Sala 8", lpObj->m_Index, "Você tem 1 minuto para ir para sala 9");
+				YellowWhispSend("Sala 08", lpObj->m_Index, "Você tem 1 minuto para ir para sala 9");
 			}
 		}
 	}
@@ -924,8 +943,8 @@ void ImperiumMap::SalaNove::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 			impMap.sala9.bossDelTime = 6;
 			impMap.sala9.DeadBoss[Id] = true;
 			
-			MapAnnounce(18, "[Sala 9] Boss  eliminado!");
-			YellowWhispSend("Sala 9", lpObj->m_Index, "Pode ir para a sala 10!");
+			MapAnnounce(18, "[Sala 09] Boss  eliminado!");
+			YellowWhispSend("Sala 09", lpObj->m_Index, "Pode ir para a sala 10!");
 		}
 	}
 }
@@ -960,7 +979,7 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 				if (impMap.sala9.countMob[Id] >= impMap.sala9.countMobConfig) {
 					impMap.sala9.bossIndex = MonsterAdd(impMap.sala9.bossId, 18, impMap.sala9.bossX, impMap.sala9.bossY); //cria boss
 					impMap.sala9.countMob[Id] = 0;
-					MapAnnounce(18, "[Sala 9] Boss apareceu!!");
+					MapAnnounce(18, "[Sala 09] Boss apareceu!!");
 				}
 			}
 		}	
