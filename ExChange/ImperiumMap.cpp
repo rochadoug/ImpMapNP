@@ -874,7 +874,7 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				NpcOutput(lpNpc->m_Index, Id, "Não está no level desta sala");
 				return TRUE;
 			}
-			else if (pObj[Id].mResets < impMap.sala8.qReset) {
+			else if (pObj[Id].mResets < impMap.sala9.qReset) {
 				NpcOutput(lpNpc->m_Index, Id, "Precisa ter %d Resets", impMap.sala6.qReset);
 				return TRUE;
 			}
