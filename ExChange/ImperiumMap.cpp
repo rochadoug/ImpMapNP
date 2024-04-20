@@ -612,7 +612,7 @@ void ImperiumMap::SalaQuatro::SetDevice(LPOBJ lpObj)
 			gObj[this->device].Type = 3;
 
 			YellowWhispSend("Sala 04", Id, "Procure o Dispositivo");
-			MapAnnounce(18, "Broken Device criado em %d - %d", coord.at(0), coord.at(1));
+			//MapAnnounce(18, "Broken Device criado em %d - %d", coord.at(0), coord.at(1));
 			this->deviceSec = 30;
 		}
 	}
