@@ -55,7 +55,8 @@ public:
 		int device, deviceSec;
 		vector<vector<int>> deviceXY;
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
-		void SetDevice();
+		void SetDevice(LPOBJ lpObj);
+		void DeviceOut();
 	}sala4;
 
 	struct SalaCinco : Room

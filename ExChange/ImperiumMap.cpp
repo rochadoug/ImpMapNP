@@ -42,6 +42,8 @@ void ImperiumMap::configGeral(){
 	{119, 83}, {119, 88}, {119, 94},  
 	{129, 88}, {129, 95}, {140, 82}, {146, 89}, {140, 97},
 	{152, 82},{151, 90}, {148, 97}, {157, 93}, };
+
+	sala4.device = -1;
 	
 	//Configs da sala 5 (Não possui)
 
@@ -371,10 +373,10 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 	int Room = GetCurRoom(lpObj);
 	int MobRoom = GetCurRoom(lpMob);
 	
-	if (lpObj->Map == 18){
-		
-		if(Room == 1){
-			if (sPlayer[Id].RoomLevel == Room ) {
+	if (lpObj->Map == 18) {
+
+		if (Room == 1) {
+			if (sPlayer[Id].RoomLevel == Room) {
 				if (pObj[Id].mResets > sala1.qReset) {
 
 					if (sala1.mobQtd > 0 && sPlayer[Id].mobKills < sala1.mobQtd) {
@@ -396,7 +398,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				}
 			}
 		}
-		if(Room == 2){
+		if (Room == 2) {
 			if (sPlayer[Id].RoomLevel == Room) {
 				if (pObj[Id].mResets > sala1.qReset) {
 					if (sala2.mobQtd > 0 && sPlayer[Id].mobKills < sala2.mobQtd) {
@@ -418,7 +420,7 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				}
 			}
 		}
-		if(Room == 3){
+		if (Room == 3) {
 			if (sPlayer[Id].RoomLevel == Room) {
 				if (pObj[Id].mResets > sala1.qReset) {
 					if (sala3.mobQtd > 0 && sPlayer[Id].mobKills < sala3.mobQtd && lpMob->Class == sala3.mobId) {
@@ -440,23 +442,27 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				}
 			}
 		}
-		if(Room == 4){
+		if (Room == 4) {
 			if (sPlayer[Id].RoomLevel == Room) {
-				sala4.quantMobToSort[Id]++;
-				if (sala4.quantMobToSort[Id] >= sala4.quantQuestValue && this->sala4.canActivateDisp[Id] == false) {
-					sala4.quantMobToSort[Id] = 0;
-
-					if (sala4.sortQuestValue < 2) //por segurança
-						sala4.sortQuestValue = 2;
-
-					int sort = rand() % sala4.sortQuestValue;
-					if (sort == sala4.sortQuestValue / 2) {
-						this->sala4.canActivateDisp[Id] = true;
-						YellowWhispSend("Sala 04", Id, "Parte do dispositivo encontrada");
-
-					}
-				}				
+				sala4.SetDevice(lpObj);
 			}
+		
+			/*if (sPlayer[Id].RoomLevel == Room) {
+			sala4.quantMobToSort[Id]++;
+			//if (sala4.quantMobToSort[Id] >= sala4.quantQuestValue && this->sala4.canActivateDisp[Id] == false) {
+			if (sala4.quantMobToSort[Id] >= sala4.quantQuestValue) {
+				sala4.quantMobToSort[Id] = 0;
+
+				if (sala4.sortQuestValue < 2) //por segurança
+					sala4.sortQuestValue = 2;
+
+				int sort = rand() % sala4.sortQuestValue;
+				if (sort == sala4.sortQuestValue / 2) {
+					this->sala4.canActivateDisp[Id] = true;
+					YellowWhispSend("Sala 04", Id, "Parte do dispositivo encontrada");
+
+				}
+			}*/
 		}
 		if(Room == 5){
 			if (sPlayer[Id].RoomLevel == Room) {
@@ -587,10 +593,43 @@ BOOL ImperiumMap::SalaTres::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 	return FALSE;
 }
 
-void ImperiumMap::SalaQuatro::SetDevice()
+void ImperiumMap::SalaQuatro::SetDevice(LPOBJ lpObj)
 {
-	if (device == -1) {
-		//device = MonsterAdd
+	int Id = lpObj->m_Index;
+
+	this->quantMobToSort[Id]++;
+
+	if (this->quantMobToSort[Id] >= this->quantQuestValue) {
+
+		if (this->device == -1) {
+			this->quantMobToSort[Id] = 0;
+			this->canActivateDisp[Id] = true;
+
+			vector<int> coord = this->deviceXY.at((rand() % this->deviceXY.size()));
+
+			this->device = MonsterNpcAdd(this->NpcId.at(1), 18, coord.at(0), coord.at(1));
+			gObj[this->device].ShopNumber = -1;
+			gObj[this->device].Type = 3;
+
+			YellowWhispSend("Sala 04", Id, "Procure o Dispositivo");
+			MapAnnounce(18, "Broken Device criado em %d - %d", coord.at(0), coord.at(1));
+			this->deviceSec = 30;
+		}
+	}
+}
+
+void ImperiumMap::SalaQuatro::DeviceOut()
+{
+	if (this->device != -1) {
+		if (this->deviceSec > 0) {
+			this->deviceSec--;
+
+			if (this->deviceSec == 1) {
+				gObjDel(this->device);
+				MapAnnounce(18, "Broken Device foi embora!");
+				this->device = -1;
+			}
+		}
 	}
 }
 
@@ -641,18 +680,23 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 						}
 					}
 
-					NpcOutput(lpNpc->m_Index, Id,"Fui consertado, pode seguir");
+					//NpcOutput(lpNpc->m_Index, Id,"Fui consertado, pode seguir");
+					YellowWhispSend(lpNpc->Name, Id, "Fui consertado, pode seguir");
 					this->isCompleteQuest[Id] = true;  //libera a porta
 					this->quantMobToSort[Id] = 0;
 					this->canActivateDisp[Id] = false;
+					gObjDel(lpNpc->m_Index);
+					this->device = -1;
 				}
 				else if (this->canActivateDisp[Id] == false && this->isCompleteQuest[Id] == true) {
 					NpcOutput(lpNpc->m_Index, Id, "Você já pode ir");
 				}
 				else {
-					NpcOutput(lpNpc->m_Index, Id, "Falta uma parte para funcionar"); //Peça
+					YellowWhispSend(lpNpc->Name, Id, "Precisa upar mais um pouco por aqui"); //Peça
 					this->isCompleteQuest[Id] = false;
 					this->quantMobToSort[Id] = 0;
+					gObjDel(lpNpc->m_Index);
+					this->device = -1;
 				}
 
 			}
