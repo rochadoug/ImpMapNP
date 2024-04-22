@@ -46,7 +46,7 @@ public:
 	struct SalaQuatro : Room
 	{
 		//int EntryGateClass, OutGateClass;
-		int sortQuestValue;
+		int brokenTimeConfig;
 		int quantQuestValue;
 		int quantMobToSort[1000];
 		bool isCompleteQuest[1000];

@@ -37,7 +37,7 @@ void ImperiumMap::configGeral(){
 	sala4.itemPremio[5] = 0;	//Luck
 	sala4.itemPremio[6] = 0;	//Opt
 	sala4.itemPremio[7] = 0;	//Exc
-	sala4.sortQuestValue = 10; // Valor para o rand para q possa consertar o broken device
+	sala4.brokenTimeConfig = 10; // Valor para o rand para q possa consertar o broken device
 	sala4.deviceXY = { {106,83}, {110,88},{106,96}, 
 	{119, 83}, {119, 88}, {119, 94},  
 	{129, 88}, {129, 95}, {140, 82}, {146, 89}, {140, 97},
@@ -153,7 +153,7 @@ void ImperiumMap::ChargeConfig()
 				}
 
 				sala4.qReset = TokenNumber; Token = GetToken();
-				sala4.sortQuestValue = TokenNumber; Token = GetToken();
+				sala4.brokenTimeConfig = TokenNumber; Token = GetToken();
 				sala4.quantQuestValue = TokenNumber; Token = GetToken();
 				sala4.itemPremio[0] = TokenNumber; Token = GetToken();
 				sala4.itemPremio[1] = TokenNumber; Token = GetToken();
@@ -611,9 +611,9 @@ void ImperiumMap::SalaQuatro::SetDevice(LPOBJ lpObj)
 			gObj[this->device].ShopNumber = -1;
 			gObj[this->device].Type = 3;
 
-			YellowWhispSend("Sala 04", Id, "Procure o Dispositivo");
-			//MapAnnounce(18, "Broken Device criado em %d - %d", coord.at(0), coord.at(1));
-			this->deviceSec = 30;
+			YellowWhispSend("Sala 04", Id, "Procure o Broken Device");
+			
+			this->deviceSec = this->brokenTimeConfig;
 		}
 	}
 }
@@ -626,7 +626,7 @@ void ImperiumMap::SalaQuatro::DeviceOut()
 
 			if (this->deviceSec == 1) {
 				gObjDel(this->device);
-				MapAnnounce(18, "Broken Device foi embora!");
+				//MapAnnounce(18, "Broken Device foi embora!");
 				this->device = -1;
 			}
 		}
@@ -636,11 +636,10 @@ void ImperiumMap::SalaQuatro::DeviceOut()
 BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 {
 	int Id = lpObj->m_Index;
-	bool naoPassa = false;
 
 	if (lpObj->Map == 18) {
 		if (lpNpc->Class == impMap.sala4.NpcId.at(0)) { // Stone Head
-			if (impMap.sPlayer[Id].RoomLevel < 4 || naoPassa) {
+			if (impMap.sPlayer[Id].RoomLevel < 4 ) {
 				NpcOutput(lpNpc->m_Index, Id, "Conclua a missão na sala 3 para passar daqui!");
 				return TRUE;
 			}
@@ -681,7 +680,7 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					}
 
 					//NpcOutput(lpNpc->m_Index, Id,"Fui consertado, pode seguir");
-					YellowWhispSend(lpNpc->Name, Id, "Fui consertado, pode seguir");
+					YellowWhispSend("B.Device", Id, "Fui consertado, pode seguir");
 					this->isCompleteQuest[Id] = true;  //libera a porta
 					this->quantMobToSort[Id] = 0;
 					this->canActivateDisp[Id] = false;
@@ -690,6 +689,8 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				}
 				else if (this->canActivateDisp[Id] == false && this->isCompleteQuest[Id] == true) {
 					NpcOutput(lpNpc->m_Index, Id, "Você já pode ir");
+					gObjDel(lpNpc->m_Index);
+					this->device = -1;
 				}
 				else {
 					YellowWhispSend(lpNpc->Name, Id, "Precisa upar mais um pouco por aqui"); //Peça
@@ -757,7 +758,8 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(char k) {
 				lpMonster->m_AttackRating = this->attackRate;
 				lpMonster->m_SuccessfulBlocking = this->defenseRate;
 				lpMonster->m_Defense = this->defense;
-				lpMonster->m_MagicDefense = this->magicDefense;				
+				lpMonster->m_MagicDefense = this->magicDefense;
+				LogAdd("Devolvendo status mob %d", this->attackDmg);
 			}
 			else if (k == 2) {
 				this->hp = lpMonster->MaxLife;
@@ -766,6 +768,7 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(char k) {
 				this->defenseRate = lpMonster->m_SuccessfulBlocking;
 				this->defense = lpMonster->m_Defense;
 				this->magicDefense = lpMonster->m_MagicDefense;
+				LogAdd("Salvando status mob %d", this->attackDmg);
 			}
 		}
 	}

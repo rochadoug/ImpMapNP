@@ -19,7 +19,7 @@ end
 //Resets mínimo para iniciar a quest  #  Quantidade de monstros da quest
 //RstSala1	RstSala2		QtdSala1	QtdSala2
 //==============================================================================================================
-  1		 1			10		10
+  1		 1			5		5
 end
 //==============================================================================================================
 2 //<- Não alterar
@@ -28,16 +28,16 @@ end
 //Reset mín  # Quest mín do sistema geral  # Creation necessária   | Monstros necessários
 //RstSala3	GeralQuestNum		   QtdCreation		   |  MobId	QtdSala3
 //==============================================================================================================
-  1		 	1			0		    66		15
+  1		 	1			0		    66		5
 end
 //==============================================================================================================
 3 //<- Não alterar
 //============================= Configuração da sala 4 =========================================================
 //== Para entra na sala ========================== Quest da sala =============================================================================
-//Reset mín    		#  Chance de sortear   	 # Qtd de monstro para	#  Item prêmio da sala  (Box +4 talvez)
-//RstSala4	   	#    o disposito 	   cada sorteio		#  Qtd	Grupo	Id	Lvl	Skill	Luck	Opt	exc
+//Reset mín    		# Tempo pra sumir   	 # Qtd de monstro para	#  Item prêmio da sala  (Box +4 talvez)
+//RstSala4	   	#   o disposito 	   cada aparecer	#  Qtd	Grupo	Id	Lvl	Skill	Luck	Opt	exc
 //============================================================================================================================================
-  1		 		4			5		    1	14	11	10	0	0	0	0
+  1		 	25				50		    1	14	11	10	0	0	0	0
 end
 //==============================================================================================================
 4 //<- Não alterar
