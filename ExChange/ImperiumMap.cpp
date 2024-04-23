@@ -65,10 +65,9 @@ void ImperiumMap::configGeral(){
 	//Configs da sala 9
 	sala9.bossId = 162;
 	sala9.bossIndex = -1;
-	sala9.bossX = 135;
-	sala9.bossY = 182;
+	sala9.bossX = 535;
+	sala9.bossY = 207;
 	sala9.bossQtd = 1;
-
 }
 
 
@@ -790,17 +789,6 @@ void ImperiumMap::SalaCinco::setBossStrong(int aIndex, int mobid)
 		}
 	}
 
-	/* Tirei daqui e coloquei na função acima
-	if (mobid == 154 && lpMonster->Map == 18) {
-		//Salvar força original dos guardas da ponte
-		this->hp = lpMonster->MaxLife;
-		this->attackDmg = lpMonster->m_AttackDamageMax;
-		this->attackRate = lpMonster->m_AttackRating;
-		this->defenseRate = lpMonster->m_SuccessfulBlocking;
-		this->defense = lpMonster->m_Defense;
-		this->magicDefense = lpMonster->m_MagicDefense;	
-	}*/
-
 	//Salvar defesa original das arvores na sala 8
 	if (mobid == 160 && lpMonster->Map == 18) {	
 		impMap.sala8.mobDefenseRate[0] = lpMonster->m_SuccessfulBlocking;
@@ -1023,7 +1011,7 @@ void ImperiumMap::SalaNove::BossRespawn(LPOBJ lpObj, LPOBJ lpMob)
 				if (impMap.sala9.countMob[Id] >= impMap.sala9.countMobConfig) {
 					impMap.sala9.bossIndex = MonsterAdd(impMap.sala9.bossId, 18, impMap.sala9.bossX, impMap.sala9.bossY); //cria boss
 					impMap.sala9.countMob[Id] = 0;
-					MapAnnounce(18, "[Sala 09] Boss apareceu!!");
+					MapAnnounce(18, "[Sala 09] Você não pode com o Chefe!!");
 				}
 			}
 		}	
