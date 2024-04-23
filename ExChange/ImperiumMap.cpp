@@ -38,10 +38,7 @@ void ImperiumMap::configGeral(){
 	sala4.itemPremio[6] = 0;	//Opt
 	sala4.itemPremio[7] = 0;	//Exc
 	sala4.brokenTimeConfig = 10; // Valor para o rand para q possa consertar o broken device
-	sala4.deviceXY = { {106,83}, {110,88},{106,96}, 
-	{119, 83}, {119, 88}, {119, 94},  
-	{129, 88}, {129, 95}, {140, 82}, {146, 89}, {140, 97},
-	{152, 82},{151, 90}, {148, 97}, {157, 93}, };
+	sala4.deviceXY = { {108,93}, {119,87}, {140,96}, {157, 86} };
 
 	sala4.device = -1;
 	
