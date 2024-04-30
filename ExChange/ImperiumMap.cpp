@@ -755,7 +755,7 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(char k) {
 				lpMonster->m_SuccessfulBlocking = this->defenseRate;
 				lpMonster->m_Defense = this->defense;
 				lpMonster->m_MagicDefense = this->magicDefense;
-				LogAdd("Devolvendo status mob %d", this->attackDmg);
+			//	LogAdd("Devolvendo status mob %d", this->attackDmg);
 			}
 			else if (k == 2) {
 				this->hp = lpMonster->MaxLife;
@@ -764,7 +764,7 @@ void ImperiumMap::SalaCinco::setBridgeGuardStrong(char k) {
 				this->defenseRate = lpMonster->m_SuccessfulBlocking;
 				this->defense = lpMonster->m_Defense;
 				this->magicDefense = lpMonster->m_MagicDefense;
-				LogAdd("Salvando status mob %d", this->attackDmg);
+			//	LogAdd("Salvando status mob %d", this->attackDmg);
 			}
 		}
 	}
