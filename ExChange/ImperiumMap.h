@@ -79,19 +79,26 @@ public:
 
 	struct SalaSete : Room
 	{
+	
+		vector<int> Item; //
 		vector<int> wheelX, wheelY;
 		vector<int> playerKey[1000]; //sequencia gerada ao quebrar estatuas
 		vector<int> secretKey;  // sequencia correta
+		vector<vector<int>> rewardItemList;  //premiação ao passar pelo portal
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
+
 	}sala7;
 
 	struct SalaOito : Room
 	{
 		int mobDefenseRate[2];
 		int mobDeadTime;
+		vector<int> Item; //
+		vector<vector<int>> rewardItemList; //premiação ao passar pelo portal
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
 		void AttackFunc(LPOBJ lpObj, LPOBJ lpTarget);
 		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
+
 	}sala8;
 
 	struct SalaNove : Room
@@ -102,6 +109,8 @@ public:
 		int itemReq[4];
 		int bossDelTime;
 		bool DeadBoss[1000];
+		vector<int> Item; //
+		vector<vector<int>> rewardItemList; //premiação ao passar pelo portal
 		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
 		void BossDeathClear();
 		void BossRespawn(LPOBJ lpObj, LPOBJ lpMob);
@@ -127,6 +136,7 @@ public:
 	bool Move(LPOBJ lpObj, BYTE pos, short lvl);
 	bool Move(LPOBJ lpObj, short lvl);
 	bool roomVerify(LPOBJ lpObj);
+	void roomPassReward(LPOBJ lpObj, vector<vector<int>> lista);
 };
 
 extern ImperiumMap impMap;
