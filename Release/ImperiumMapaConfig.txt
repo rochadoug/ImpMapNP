@@ -37,7 +37,7 @@ end
 //Reset mín    		# Tempo pra sumir   	 # Qtd de monstro para	#  Item prêmio da sala  (Box +4 talvez)
 //RstSala4	   	#   o disposito 	   cada aparecer	#  Qtd	Grupo	Id	Lvl	Skill	Luck	Opt	exc
 //============================================================================================================================================
-  1		 	25				50		    1	14	11	10	0	0	0	0
+  1		 	25				20		    1	14	11	10	0	0	0	0
 end
 //==============================================================================================================
 4 //<- Não alterar
@@ -45,34 +45,65 @@ end
 //    		Configuração do poder e tempo de respawn do Boss 
 //BossId	HP		AttackDmg	AttackRate	Defense		MagicDefense	DefenseRate	RegenTime(segundos)
 //===============================================================================================================
-  150		60000		15000		20000		15000		15000		24000		60
+  163		60000		15000		20000		15000		15000		24000		60
 end
 //==============================================================================================================
 5 //<- Não alterar
 //============================= Configuração da sala 6 =========================================================
-//    		Configuração do Tempo da Dragon Door ficar aberta 
-//Tempo_pra_abrir(min)	Tempo_para_fechar(min)
+//    		Configuração do Tempo da Dragon Door abrir / ficar fechada
+//Abrir(min)	Fechar(min)
 //===============================================================================================================
   1		10
 end
 
 // Sala 7 não possui configuração pois é um sistema de sorteio de 3 chaves para ir para a sala 8.
 // Se o player errar, ele volta para o início da sala 5
-
-// Sala 8 são os 3 boss SoulTree A, B e C. O player que matar os 3 de uma vez e clicar no portal antes que nasçam e novo.
-// basta configurar o tempo de respawn e força dos 3 de acordo com a dificuldade desejada. E isso só testando.
-// Também o drop custom de cada um deles deve ser feito no arquivo DropSystem.txt.
-
-
 //==============================================================================================================
 6 //<- Não alterar
+//============================= Configuração da sala 7 =========================================================
+// Se o player errar a combinação, ele volta para o início da sala 5
+// Premiação em item ao passar pelo portal npc, cabe até 10 itens aleatórios como premio
+//Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
+//==============================================================================================================
+  14	11	5	0	0	0	0	0
+  14	11	7	0	0	0	0	0
+  14	11	8	0	0	0	0	0
+end
+
+//==============================================================================================================
+7 //<- Não alterar
+//============================= Configuração da sala 8 =========================================================
+// O player deve matar o SoulTree A, B e C em sequência e passar o portal em 1 min após matar o último.
+// A dificuldade é estabelecida configurando a força e tempo de respawn dos mobs.
+// Premiação em item ao passar pelo portal npc, cabe até 10 itens aleatórios como premio
+//Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
+//==============================================================================================================
+  14	11	6	0	0	0	0	0
+  14	11	9	0	0	0	0	0
+  14	11	10	0	0	0	0	0
+end
+
+//==============================================================================================================
+8 //<- Não alterar
 //============================= Configuração da sala 9 =========================================================
 // Para entrar		Qtd de Mobs para	Item necessário para ir pra sala 10		
-////Reset mín		 boss aparecer		Qtd	Grupo	Id	Level
+//Reset mín		 boss aparecer		Qtd	Grupo	Id	Level
 //===============================================================================================================
   1			 15			1	14	29	0
 end
-//Em breve atualizado com as demais configs (último change: 02/03/2024)
+//==============================================================================================================
+9 //<- Não alterar
+//============================= Configuração da sala 9 =========================================================
+// Premiação em item ao passar pelo portal teleport, cabe até 10 itens aleatórios como premio
+//Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
+//==============================================================================================================
+  14	11	5	0	0	0	0	0
+  14	11	11	0	0	0	0	0
+  14	11	12	0	0	0	0	0
+end
+
+//(último change: 21/05/2024)
 //Sistema finalizado, configuração da sala 9 é no arquivo de dropsystem
 // configuração da sala 10 fica por conta de querer ou não colocar boss lá.
 // ao chegar na sala 10, já ganha ponto de rank e 1 teleport +12 pra ir direto ao estágio 5 do mapa.
+//******* Adicionado premiação nos npcs da sala 7 pra 8, 8 pra 9 e no portal para sala 10 ********
