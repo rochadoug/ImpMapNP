@@ -98,7 +98,6 @@ void ImperiumMap::ChargeConfig()
 			Section = TokenNumber;
 
 
-
 		while (true)
 		{
 			if (Section == 0) //sala 1
