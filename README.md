@@ -1,5 +1,5 @@
-# ImpMapNP Mapa Imperium
-### Sistema do mapa imperium para o Munetplay
+# Mapa Imperium para MuOnline
+### Sistema do mapa imperium
 Um mapa desenvolvido totalmente do zero para a versão 97d do Muonline.
 As quests customizadas fazem do mapa um estilo de calabouço onde o player irá para farmar itens raros no jogo, além do sistema de ranking do mapa para aumentar ainda mais a competitividade do jogo.
 
