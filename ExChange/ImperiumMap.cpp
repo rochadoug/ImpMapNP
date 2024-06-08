@@ -121,7 +121,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-
 				sala1.qReset = TokenNumber; Token = GetToken();
 				sala2.qReset = TokenNumber; Token = GetToken();
 				sala1.mobQtd = TokenNumber; Token = GetToken();
@@ -135,7 +134,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-
 				sala3.qReset = TokenNumber; Token = GetToken();
 				sala3.geralQuest = TokenNumber; Token = GetToken();
 				sala3.qtdCreation = TokenNumber; Token = GetToken();
@@ -150,7 +148,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-
 				sala4.qReset = TokenNumber; Token = GetToken();
 				sala4.brokenTimeConfig = TokenNumber; Token = GetToken();
 				sala4.quantQuestValue = TokenNumber; Token = GetToken();
@@ -188,8 +185,6 @@ void ImperiumMap::ChargeConfig()
 				}
 				sala6.timeToOpen = TokenNumber; Token = GetToken();
 				sala6.timeToClose = TokenNumber;
-
-				
 			}
 			else if (Section == 6)  //Sala 7
 			{
@@ -198,8 +193,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-
-				
 				sala7.rewardItemList[sala7.countItem][0] = TokenNumber; Token = GetToken(); //grupo
 				sala7.rewardItemList[sala7.countItem][1] = TokenNumber; Token = GetToken(); //index
 				sala7.rewardItemList[sala7.countItem][2] = TokenNumber; Token = GetToken(); //level
@@ -208,11 +201,9 @@ void ImperiumMap::ChargeConfig()
 				sala7.rewardItemList[sala7.countItem][5] = TokenNumber; Token = GetToken(); //luck
 				sala7.rewardItemList[sala7.countItem][6] = TokenNumber; Token = GetToken(); //opt
 				sala7.rewardItemList[sala7.countItem][7] = TokenNumber;						//exc
-				//sala7.countItem++;
-				
-				ExchangeMsgBox("Item gp: %d id: %d lvl: %d lista:%d", sala7.rewardItemList[sala7.countItem][0], sala7.rewardItemList[sala7.countItem][1], sala7.rewardItemList[sala7.countItem][2], sala7.countItem);
 				sala7.countItem++;
-				//cLog.CreateLog(cLog.lSyst, "Sala 7 reward item size: %d", sala7.countItem);
+				//ExchangeMsgBox("Item gp: %d id: %d lvl: %d lista:%d", sala7.rewardItemList[sala7.countItem][0], sala7.rewardItemList[sala7.countItem][1], sala7.rewardItemList[sala7.countItem][2], sala7.countItem);
+				//sala7.countItem++;
 				if (sala7.countItem > 19) {
 					ExchangeMsgBox("[ImperiumMapaConfig] Apenas 19 itens na premiação da sala 7");
 					exit(0);
@@ -225,7 +216,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-				
 				sala8.rewardItemList[sala8.countItem][0] = TokenNumber; Token = GetToken(); //grupo
 				sala8.rewardItemList[sala8.countItem][1] = TokenNumber; Token = GetToken(); //index
 				sala8.rewardItemList[sala8.countItem][2] = TokenNumber; Token = GetToken(); //level
@@ -264,7 +254,6 @@ void ImperiumMap::ChargeConfig()
 				{
 					break;
 				}
-				
 				sala9.rewardItemList[sala9.countItem][0] = TokenNumber; Token = GetToken(); //grupo
 				sala9.rewardItemList[sala9.countItem][1] = TokenNumber; Token = GetToken(); //index
 				sala9.rewardItemList[sala9.countItem][2] = TokenNumber; Token = GetToken(); //level
@@ -890,17 +879,17 @@ void ImperiumMap::SalaCinco::setBossStrong(int aIndex, int mobid)
 	LPOBJ lpMonster = &gObj[aIndex];
 	if (mobid == this->bossId && lpMonster->m_RecallMon == -1) {
 		if (lpMonster->Map == 18 && impMap.GetCurRoom(lpMonster) == 5) {
-			
-				//deixo forte
-				lpMonster->Life = this->hpConf;
-				lpMonster->MaxLife = this->hpConf;
-				lpMonster->m_AttackDamageMax = this->attackDmgConf;
-				lpMonster->m_AttackRating = this->attackRateConf;
-				lpMonster->m_SuccessfulBlocking = this->defenseRateConf;
-				lpMonster->m_Defense = this->defenseConf;
-				lpMonster->m_MagicDefense = this->magicDefenseConf;
-				lpMonster->MaxRegenTime = this->regenTimeConf * 1000;
-				MapAnnounce(18,"[Sala 05] O Boss apareceu");
+
+			//deixo forte
+			lpMonster->Life = this->hpConf;
+			lpMonster->MaxLife = this->hpConf;
+			lpMonster->m_AttackDamageMax = this->attackDmgConf;
+			lpMonster->m_AttackRating = this->attackRateConf;
+			lpMonster->m_SuccessfulBlocking = this->defenseRateConf;
+			lpMonster->m_Defense = this->defenseConf;
+			lpMonster->m_MagicDefense = this->magicDefenseConf;
+			lpMonster->MaxRegenTime = this->regenTimeConf * 1000;
+			MapAnnounce(18, "[Sala 05] O Boss apareceu");
 		}
 	}
 
@@ -954,12 +943,13 @@ BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				impMap.sPlayer[Id].RoomLevel = 7;
 				impMap.sala7.secretKey.clear();
 
-				vector<int> sortKey[3];
+				vector<int> sortKey[4];
 				sortKey[0] = {0, 1, 2, 3, 4, 5};
 				sortKey[1] = {5, 4, 3, 2, 1, 0};
 				sortKey[2] = {2, 1, 0, 5, 4, 3};
+				sortKey[3] = {5, 4, 3, 0, 1, 2};
 
-				int mKey = 0;// rand() % 3;
+				int mKey = rand() % 4;
 				impMap.sala7.secretKey = sortKey[mKey];
 				//MapMsgOutput(18, "Chave sorteada %d", mKey);  // Não esquecer de tirar
 			}
