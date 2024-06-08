@@ -15,19 +15,14 @@ public:
 		long long rankPoints;
 	}sPlayer[1000];
 
-	struct Item
-	{
-		int info[8];
 
-		int getInfo(int n);
-	};
 	struct Room
 	{	
 		BYTE X1, Y1, X2, Y2;
 		vector<BYTE> RespX, RespY;
 		vector<int> NpcId;
-		vector<Item> items;
 		int qReset;
+		
 	};
 	//vector<Room> sRoom;
 
@@ -86,20 +81,22 @@ public:
 
 	struct SalaSete : Room
 	{
-		
+		int countItem;
 		vector<int> wheelX, wheelY;
 		vector<int> playerKey[1000]; //sequencia gerada ao quebrar estatuas
 		vector<int> secretKey;  // sequencia correta
-		vector<int> rewardItemList[20];  //premiação ao passar pelo portal
+		int rewardItemList[20][8];  //premiação ao passar pelo portal
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
+		void RewardItem();
 
 	}sala7;
 
 	struct SalaOito : Room
 	{
+		int countItem;
 		int mobDefenseRate[2];
 		int mobDeadTime;
-		vector<int> rewardItemList[20];  //premiação ao passar pelo portal
+		int rewardItemList[20][8];  //premiação ao passar pelo portal
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
 		void AttackFunc(LPOBJ lpObj, LPOBJ lpTarget);
 		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
@@ -108,13 +105,14 @@ public:
 
 	struct SalaNove : Room
 	{
+		int countItem;
 		int bossId, bossQtd, bossIndex;
 		int bossX, bossY;
 		int countMob[1000], countMobConfig;
 		int itemReq[4];
 		int bossDelTime;
 		bool DeadBoss[1000];
-		vector<int> rewardItemList[20];  //premiação ao passar pelo portal
+		int rewardItemList[20][8];  //premiação ao passar pelo portal
 		void BossDeath(LPOBJ lpMonster, LPOBJ lpObj);
 		void BossDeathClear();
 		void BossRespawn(LPOBJ lpObj, LPOBJ lpMob);
@@ -140,7 +138,7 @@ public:
 	bool Move(LPOBJ lpObj, BYTE pos, short lvl);
 	bool Move(LPOBJ lpObj, short lvl);
 	bool roomVerify(LPOBJ lpObj);
-	void roomPassReward(LPOBJ lpObj, vector<Item> lista);
+	void roomPassReward(LPOBJ lpObj, int sala);
 };
 
 extern ImperiumMap impMap;

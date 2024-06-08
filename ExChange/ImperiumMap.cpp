@@ -76,15 +76,16 @@ void ImperiumMap::ChargeConfig()
 	this->configGeral();
 
 	int Token, Section = -1;
-	int count7 = 0, count8 = 0, count9 = 0;
+	
 	SMDFile = fopen(IMPMAPTXT, "r");
 	if (SMDFile == 0)
 	{
 		ExchangeMsgBox("[Konvict plugin] Falha ao carregar: %s", IMPMAPTXT);
 		::ExitProcess(0);
 	}
-	//int Cont[10] = {0};
-	//char Cnum[10] = { '0' };
+	sala7.countItem = 0;
+	sala8.countItem = 0;
+	sala9.countItem = 0;
 
 	while (true)
 	{
@@ -95,6 +96,8 @@ void ImperiumMap::ChargeConfig()
 		}
 		if (Token == NUMBER)
 			Section = TokenNumber;
+
+
 
 		while (true)
 		{
@@ -112,7 +115,7 @@ void ImperiumMap::ChargeConfig()
 				this->moveItemLevel = TokenNumber;						//item level
 			}
 
-			if (Section == 1) //sala 2
+			else if (Section == 1) //sala 2
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -126,7 +129,7 @@ void ImperiumMap::ChargeConfig()
 				sala2.mobQtd = TokenNumber;
 			}
 
-			if (Section == 2) //sala 3
+			else if (Section == 2) //sala 3
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -141,7 +144,7 @@ void ImperiumMap::ChargeConfig()
 				sala3.mobQtd = TokenNumber;
 			}
 
-			if (Section == 3) //sala 4
+			else if (Section == 3) //sala 4
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -161,7 +164,7 @@ void ImperiumMap::ChargeConfig()
 				sala4.itemPremio[6] = TokenNumber; Token = GetToken();
 				sala4.itemPremio[7] = TokenNumber;
 			}
-			if (Section == 4) //Boss sala 5
+			else if (Section == 4) //Boss sala 5
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -177,7 +180,7 @@ void ImperiumMap::ChargeConfig()
 				sala5.defenseRateConf = TokenNumber; Token = GetToken();
 				sala5.regenTimeConf = TokenNumber;
 			}
-			if (Section == 5)  //Dragon door
+			else if (Section == 5)  //Dragon door sala 6
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -185,10 +188,11 @@ void ImperiumMap::ChargeConfig()
 					break;
 				}
 				sala6.timeToOpen = TokenNumber; Token = GetToken();
-				sala6.timeToClose = TokenNumber; 
+				sala6.timeToClose = TokenNumber;
 
+				
 			}
-			if (Section == 6)  //Sala 7
+			else if (Section == 6)  //Sala 7
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -196,58 +200,50 @@ void ImperiumMap::ChargeConfig()
 					break;
 				}
 
-				Item item;
-				item.info[0] = TokenNumber; Token = GetToken(); //grupo
-				item.info[1] = TokenNumber; Token = GetToken(); //index
-				item.info[2] = TokenNumber; Token = GetToken(); //level
-				item.info[3] = TokenNumber; Token = GetToken(); //dur
-				item.info[4] = TokenNumber; Token = GetToken(); //skill
-				item.info[5] = TokenNumber; Token = GetToken(); //luck
-				item.info[6] = TokenNumber; Token = GetToken(); //opt
-				item.info[7] = TokenNumber;						//exc
-				sala7.items.push_back(item);
-				count7++;
-
-				/*sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //grupo
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //index
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //lvel
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //dur
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //skill
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //luck
-				sala7.rewardItemList[count7].push_back(TokenNumber); Token = GetToken(); //opt
-				sala7.rewardItemList[count7].push_back(TokenNumber);					 //exc
-				count7++;*/
-				if (count7 > 19) {
+				
+				sala7.rewardItemList[sala7.countItem][0] = TokenNumber; Token = GetToken(); //grupo
+				sala7.rewardItemList[sala7.countItem][1] = TokenNumber; Token = GetToken(); //index
+				sala7.rewardItemList[sala7.countItem][2] = TokenNumber; Token = GetToken(); //level
+				sala7.rewardItemList[sala7.countItem][3] = TokenNumber; Token = GetToken(); //dur
+				sala7.rewardItemList[sala7.countItem][4] = TokenNumber; Token = GetToken(); //skill
+				sala7.rewardItemList[sala7.countItem][5] = TokenNumber; Token = GetToken(); //luck
+				sala7.rewardItemList[sala7.countItem][6] = TokenNumber; Token = GetToken(); //opt
+				sala7.rewardItemList[sala7.countItem][7] = TokenNumber;						//exc
+				//sala7.countItem++;
+				
+				ExchangeMsgBox("Item gp: %d id: %d lvl: %d lista:%d", sala7.rewardItemList[sala7.countItem][0], sala7.rewardItemList[sala7.countItem][1], sala7.rewardItemList[sala7.countItem][2], sala7.countItem);
+				sala7.countItem++;
+				//cLog.CreateLog(cLog.lSyst, "Sala 7 reward item size: %d", sala7.countItem);
+				if (sala7.countItem > 19) {
 					ExchangeMsgBox("[ImperiumMapaConfig] Apenas 19 itens na premiação da sala 7");
-					break;
+					exit(0);
 				}
 			}
-			if (Section == 7)  //Sala 8
+			else if (Section == 7)  //Sala 8
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
 				{
 					break;
 				}
-				Item item;
-				item.info[0] = TokenNumber; Token = GetToken(); //grupo
-				item.info[1] = TokenNumber; Token = GetToken(); //index
-				item.info[2] = TokenNumber; Token = GetToken(); //level
-				item.info[3] = TokenNumber; Token = GetToken(); //dur
-				item.info[4] = TokenNumber; Token = GetToken(); //skill
-				item.info[5] = TokenNumber; Token = GetToken(); //luck
-				item.info[6] = TokenNumber; Token = GetToken(); //opt
-				item.info[7] = TokenNumber;						//exc
-				sala8.items.push_back(item);
-				count8++;
+				
+				sala8.rewardItemList[sala8.countItem][0] = TokenNumber; Token = GetToken(); //grupo
+				sala8.rewardItemList[sala8.countItem][1] = TokenNumber; Token = GetToken(); //index
+				sala8.rewardItemList[sala8.countItem][2] = TokenNumber; Token = GetToken(); //level
+				sala8.rewardItemList[sala8.countItem][3] = TokenNumber; Token = GetToken(); //dur
+				sala8.rewardItemList[sala8.countItem][4] = TokenNumber; Token = GetToken(); //skill
+				sala8.rewardItemList[sala8.countItem][5] = TokenNumber; Token = GetToken(); //luck
+				sala8.rewardItemList[sala8.countItem][6] = TokenNumber; Token = GetToken(); //opt
+				sala8.rewardItemList[sala8.countItem][7] = TokenNumber;						//exc
+				sala8.countItem++;
 
-				if (count8 > 19) {
+				if (sala8.countItem > 19) {
 					ExchangeMsgBox("[ImperiumMapaConfig] Apenas 19 itens na premiação da sala 7");
-					break;
+					exit(0);
 				}
 			}
 
-			if (Section == 8)  //Sala 9
+			else if (Section == 8)  //Sala 9
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
@@ -262,31 +258,31 @@ void ImperiumMap::ChargeConfig()
 				sala9.itemReq[3] = TokenNumber;
 
 			}
-			if (Section == 9)  //Sala 9
+			else if (Section == 9)  //Sala 9
 			{
 				Token = GetToken();
 				if (strcmpi("end", TokenString) == 0)
 				{
 					break;
 				}
-
-				Item item;
-				item.info[0] = TokenNumber; Token = GetToken(); //grupo
-				item.info[1] = TokenNumber; Token = GetToken(); //index
-				item.info[2] = TokenNumber; Token = GetToken(); //level
-				item.info[3] = TokenNumber; Token = GetToken(); //dur
-				item.info[4] = TokenNumber; Token = GetToken(); //skill
-				item.info[5] = TokenNumber; Token = GetToken(); //luck
-				item.info[6] = TokenNumber; Token = GetToken(); //opt
-				item.info[7] = TokenNumber;						//exc
-				sala9.items.push_back(item);
-				count9++;
-				if (count9 > 19) {
+				
+				sala9.rewardItemList[sala9.countItem][0] = TokenNumber; Token = GetToken(); //grupo
+				sala9.rewardItemList[sala9.countItem][1] = TokenNumber; Token = GetToken(); //index
+				sala9.rewardItemList[sala9.countItem][2] = TokenNumber; Token = GetToken(); //level
+				sala9.rewardItemList[sala9.countItem][3] = TokenNumber; Token = GetToken(); //dur
+				sala9.rewardItemList[sala9.countItem][4] = TokenNumber; Token = GetToken(); //skill
+				sala9.rewardItemList[sala9.countItem][5] = TokenNumber; Token = GetToken(); //luck
+				sala9.rewardItemList[sala9.countItem][6] = TokenNumber; Token = GetToken(); //opt
+				sala9.rewardItemList[sala9.countItem][7] = TokenNumber;						//exc
+				sala9.countItem++;
+				
+				if (sala9.countItem > 19) {
 					ExchangeMsgBox("[ImperiumMapaConfig] Apenas 19 itens na premiação da sala 9");
-					break;
+					exit(0);
 				}
 
 			}
+			
 		}
 	}
 	fclose(SMDFile);
@@ -423,16 +419,37 @@ bool ImperiumMap::roomVerify(LPOBJ lpObj)
 	return true;
 }
 
-void ImperiumMap::roomPassReward(LPOBJ lpObj, vector<Item> lista)
+void ImperiumMap::roomPassReward(LPOBJ lpObj, int sala)
 {
-	if (lista.size() > 0) {
-		if (lista.size() > 1) {
-			int itemSort = rand() % lista.size();
 
-			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(lista.at(itemSort).getInfo(0), lista.at(itemSort).getInfo(1)), lista.at(itemSort).getInfo(2), lista.at(itemSort).getInfo(3), lista.at(itemSort).getInfo(4), lista.at(itemSort).getInfo(5), lista.at(itemSort).getInfo(6), lpObj->m_Index, lista.at(itemSort).getInfo(7));
+	if (sala == 7) {
+		if (sala7.countItem > 0) {
+			int itemSort = sala7.countItem > 1 ? rand() % sala7.countItem : 0;
+			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala7.rewardItemList[itemSort][0], sala7.rewardItemList[itemSort][1]), sala7.rewardItemList[itemSort][2], sala7.rewardItemList[itemSort][3], sala7.rewardItemList[itemSort][4], sala7.rewardItemList[itemSort][5], sala7.rewardItemList[itemSort][6], lpObj->m_Index, sala7.rewardItemList[itemSort][7]);
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
 		}
 		else {
-			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(lista.at(0).getInfo(0), lista.at(0).getInfo(1)), lista.at(0).getInfo(2), lista.at(0).getInfo(3), lista.at(0).getInfo(4), lista.at(0).getInfo(5), lista.at(0).getInfo(6), lpObj->m_Index, lista.at(0).getInfo(7));
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
+		}
+	}
+	else if (sala == 8) {
+		if (sala8.countItem > 0) {
+			int itemSort = sala8.countItem > 1 ? rand() % sala8.countItem : 0;
+			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala8.rewardItemList[itemSort][0], sala8.rewardItemList[itemSort][1]), sala8.rewardItemList[itemSort][2], sala8.rewardItemList[itemSort][3], sala8.rewardItemList[itemSort][4], sala8.rewardItemList[itemSort][5], sala8.rewardItemList[itemSort][6], lpObj->m_Index, sala8.rewardItemList[itemSort][7]);
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
+		}
+		else {
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
+		}
+	}
+	else if (sala == 9) {
+		if (sala9.countItem > 0) {
+			int itemSort = sala9.countItem > 1 ? rand() % sala9.countItem : 0;
+			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala9.rewardItemList[itemSort][0], sala9.rewardItemList[itemSort][1]), sala9.rewardItemList[itemSort][2], sala9.rewardItemList[itemSort][3], sala9.rewardItemList[itemSort][4], sala9.rewardItemList[itemSort][5], sala9.rewardItemList[itemSort][6], lpObj->m_Index, sala9.rewardItemList[itemSort][7]);
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
+		}
+		else {
+			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
 		}
 	}
 }
@@ -943,7 +960,7 @@ BOOL ImperiumMap::SalaSeis::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				sortKey[1] = {5, 4, 3, 2, 1, 0};
 				sortKey[2] = {2, 1, 0, 5, 4, 3};
 
-				int mKey = rand() % 3;
+				int mKey = 0;// rand() % 3;
 				impMap.sala7.secretKey = sortKey[mKey];
 				//MapMsgOutput(18, "Chave sorteada %d", mKey);  // Não esquecer de tirar
 			}
@@ -974,7 +991,7 @@ BOOL ImperiumMap::SalaSete::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 						YellowWhispSend("Sala 07", Id, "SEGREDO RESOLVIDO");
 						impMap.Move(lpObj, 8); // Go sala 8
 						this->playerKey[Id].clear();
-						impMap.roomPassReward(lpObj, this->items);
+						impMap.roomPassReward(lpObj, 7);
 					}
 					else if (this->playerKey[Id].size() != this->secretKey.size()) {
 						NpcOutput(lpNpc->m_Index, Id, "RESOLVA O SEGREDO");
@@ -1018,7 +1035,7 @@ BOOL ImperiumMap::SalaOito::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 				}
 				else {
 					impMap.Move(lpObj, 9); // Go sala 9
-					impMap.roomPassReward(lpObj, this->items);
+					impMap.roomPassReward(lpObj, 8);
 				}
 				return TRUE;
 			}		
@@ -1170,15 +1187,10 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 			impMap.sPlayer[aIndex].rankPoints++;
 			int iTeleport = ITEMGET(14, 10);
 			ItemSerialCreateSend(aIndex, 18, 213, 204, iTeleport, 12, 0, 0, 0, 0, aIndex, 0);
-			impMap.roomPassReward(lpObj, this->items);
+			impMap.roomPassReward(lpObj, 9);
 			AllServerAnnounce("[Mapa Imperium] %s Finalizou todas as quests!", lpObj->Name);
 			MySQL.ExecQuery("UPDATE Character SET ImpMapRank = ImpMapRank + 1 where Name = '%s'", lpObj->Name);
 			MySQL.Fetch();
 		}
 	}
-}
-
-int ImperiumMap::Item::getInfo(int n)
-{
-	return this->info[n];
 }
