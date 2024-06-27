@@ -547,22 +547,6 @@ void ImperiumMap::RoomQuestCountKill(LPOBJ lpMob, LPOBJ lpObj){
 				sala4.SetDevice(lpObj);
 			}
 		
-			/*if (sPlayer[Id].RoomLevel == Room) {
-			sala4.quantMobToSort[Id]++;
-			//if (sala4.quantMobToSort[Id] >= sala4.quantQuestValue && this->sala4.canActivateDisp[Id] == false) {
-			if (sala4.quantMobToSort[Id] >= sala4.quantQuestValue) {
-				sala4.quantMobToSort[Id] = 0;
-
-				if (sala4.sortQuestValue < 2) //por segurança
-					sala4.sortQuestValue = 2;
-
-				int sort = rand() % sala4.sortQuestValue;
-				if (sort == sala4.sortQuestValue / 2) {
-					this->sala4.canActivateDisp[Id] = true;
-					YellowWhispSend("Sala 04", Id, "Parte do dispositivo encontrada");
-
-				}
-			}*/
 		}
 		if(Room == 5){
 			if (sPlayer[Id].RoomLevel == Room) {
