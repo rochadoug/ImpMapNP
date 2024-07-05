@@ -75,7 +75,7 @@ public:
 	struct SalaSeis : Room
 	{
 		int timeToOpen,timeToClose, timeOpend, second;
-		void DragonDoorProc();
+		void dragonDoorProc();
 		BOOL NPCFunc(LPOBJ lpNpc, LPOBJ lpObj);
 	}sala6;
 

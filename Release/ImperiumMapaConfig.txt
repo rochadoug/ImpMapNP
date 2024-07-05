@@ -10,7 +10,7 @@
 //Level e Resets necessáros para mover para o mapa # Item a ser usado para mover para o mapa(se for trocar, usar item q aceita 'click Dir')
 //LevelReq	ResetReq	ItemGrupo	ItemId		ItemLevel
 //==============================================================================================================
-  150		 500		14		10		11
+  260		 500		14		10		11
 end
 //==============================================================================================================
 1 //<- Não alterar
@@ -19,7 +19,7 @@ end
 //Resets mínimo para iniciar a quest  #  Quantidade de monstros da quest
 //RstSala1	RstSala2		QtdSala1	QtdSala2
 //==============================================================================================================
-  1		 1			5		5
+  500		 500			10		10
 end
 //==============================================================================================================
 2 //<- Não alterar
@@ -28,16 +28,16 @@ end
 //Reset mín  # Quest mín do sistema geral  # Creation necessária   | Monstros necessários
 //RstSala3	GeralQuestNum		   QtdCreation		   |  MobId	QtdSala3
 //==============================================================================================================
-  1		 	1			0		    66		5
+  750		 	123			5		    66		7500
 end
 //==============================================================================================================
 3 //<- Não alterar
 //============================= Configuração da sala 4 =========================================================
-//== Para entra na sala ========================== Quest da sala =============================================================================
-//Reset mín    		# Tempo pra sumir   	 # Qtd de monstro para	#  Item prêmio da sala  (Box +4 talvez)
-//RstSala4	   	#   o disposito 	   cada aparecer	#  Qtd	Grupo	Id	Lvl	Skill	Luck	Opt	exc
-//============================================================================================================================================
-  1		 	25				20		    1	14	11	10	0	0	0	0
+//== Para entra na sala ========================== Quest da sala ====================================================================
+//Reset mín    	# Tempo pra sumir   # Qtd de monstro para	#  Item prêmio da sala  (Box +4 talvez)
+//RstSala4	#  o disposito 	    #  aparecer		        #  Qtd	Grupo	Id	Lvl	Skill	Luck	Opt	exc
+//====================================================================================================================================
+  1000		     4			 10	 		    1	14	11	11	0	0	0	0
 end
 //==============================================================================================================
 4 //<- Não alterar
@@ -45,17 +45,16 @@ end
 //    		Configuração do poder e tempo de respawn do Boss 
 //BossId	HP		AttackDmg	AttackRate	Defense		MagicDefense	DefenseRate	RegenTime(segundos)
 //===============================================================================================================
-  163		60000		15000		20000		15000		15000		24000		60
+  59		1900000		20000		24000		20000		19000		28000		1200
 end
 //==============================================================================================================
 5 //<- Não alterar
 //============================= Configuração da sala 6 =========================================================
-//    		Configuração do Tempo da Dragon Door abrir / ficar fechada
-//Abrir(min)	Fechar(min)
+//    		Configuração do Tempo da Dragon Door ficar aberta 
+//Tempo_pra_abrir(min)	Tempo_para_fechar(min)
 //===============================================================================================================
-  1		10
+  5		10
 end
-
 // Sala 7 não possui configuração pois é um sistema de sorteio de 3 chaves para ir para a sala 8.
 // Se o player errar, ele volta para o início da sala 5
 //==============================================================================================================
@@ -65,9 +64,11 @@ end
 // Premiação em item ao passar pelo portal npc, cabe até 10 itens aleatórios como premio
 //Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
 //==============================================================================================================
-  14	11	5	0	0	0	0	0
-  14	11	7	0	0	0	0	0
-  14	11	8	0	0	0	0	0
+  14	29	0	0	0	0	0	0
+  14	11 	11	0	0	0	0	0
+  14	14	0	0	0	0	0	0
+  14	13	0	0	0	0	0	0
+  12	15	0	0	0	0	0	0
 end
 
 //==============================================================================================================
@@ -78,9 +79,13 @@ end
 // Premiação em item ao passar pelo portal npc, cabe até 10 itens aleatórios como premio
 //Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
 //==============================================================================================================
-  14	11	6	0	0	0	0	0
-  14	11	9	0	0	0	0	0
-  14	11	10	0	0	0	0	0
+  14	29	0	0	0	0	0	0
+  14	11	1	0	0	0	0	0
+  14	11 	12	0	0	0	0	0
+  14	11 	11	0	0	0	0	0
+  14	14	0	0	0	0	0	0
+  14	13	0	0	0	0	0	0
+  12	15	0	0	0	0	0	0
 end
 
 //==============================================================================================================
@@ -89,7 +94,7 @@ end
 // Para entrar		Qtd de Mobs para	Item necessário para ir pra sala 10		
 //Reset mín		 boss aparecer		Qtd	Grupo	Id	Level
 //===============================================================================================================
-  1			 15			1	14	29	0
+  1900			 15			1	14	29	0
 end
 //==============================================================================================================
 9 //<- Não alterar
@@ -97,11 +102,12 @@ end
 // Premiação em item ao passar pelo portal teleport, cabe até 10 itens aleatórios como premio
 //Grupo	Index	Level	Dur	Skill	Luck	Opt	Exc
 //==============================================================================================================
-  14	11	5	0	0	0	0	0
-  14	11	11	0	0	0	0	0
-  14	11	12	0	0	0	0	0
+  14	11	1	0	0	0	0	0
+  14	27	0	0	0	0	0	0
+  14	28	0	0	0	0	0	0
+  14	29	0	0	0	0	0	0
+  14	30	0	0	0	0	0	0
 end
-
 //(último change: 21/05/2024)
 //Sistema finalizado, configuração da sala 9 é no arquivo de dropsystem
 // configuração da sala 10 fica por conta de querer ou não colocar boss lá.

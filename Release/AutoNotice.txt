@@ -1,0 +1,27 @@
+//=========================================================================
+// Projeto	-> ExChange - Premium
+// Versão do GS -> 0.96.04
+// Codado por   -> Konvict (Douglas)
+// Informação   -> Sistema de auto-mensagem
+//=========================================================================
+//=========================================================================
+0 //-> Não alterar esse valor
+//========================================================================================================
+// Ativar sistema     // Tempo entre as notícias
+// 1 = On / 0 = OFF   //	(em minuto)
+//========================================================================================================
+1	120
+end
+//========================================================================================================
+1 //-> Não alterar esse valor
+//========================================================================================================
+// Notícias (Até 20 noticias)
+// Cada linha é uma notícia
+//========================================================================================================
+"[Comando adicionar pontos]"	        "Use: /add <status> <pontos>"		"status: for, agi, vit, ene"
+"[Sistema de Reset do MuNetPlay]"	"Reset somente dentro do jogo"		"Comando a Usar: /reset"
+"[Baús Extras do MuNetPlay]"		"Use /bau <número> para mudar"		"Free possui 1, e VIP 2 baús extras"
+"[Utilize nosso Shop de Stones]"	"Vá ao comerciante em frente ao bar"	"de lorencia e obtenha itens por stones"
+"[Banco de Jóias MuNetPlay]"		"digite /banco saldo p/ consulta"	"/banco deposito/saque <joia> <qnt>"
+"[Sistema de Quest Personalizado]"	"Vá ao QuestGuard e aliste-se"		"para alguma missão. Ganhe premios!"
+end

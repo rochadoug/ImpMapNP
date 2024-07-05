@@ -414,30 +414,30 @@ void ImperiumMap::roomPassReward(LPOBJ lpObj, int sala)
 		if (sala7.countItem > 0) {
 			int itemSort = sala7.countItem > 1 ? rand() % sala7.countItem : 0;
 			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala7.rewardItemList[itemSort][0], sala7.rewardItemList[itemSort][1]), sala7.rewardItemList[itemSort][2], sala7.rewardItemList[itemSort][3], sala7.rewardItemList[itemSort][4], sala7.rewardItemList[itemSort][5], sala7.rewardItemList[itemSort][6], lpObj->m_Index, sala7.rewardItemList[itemSort][7]);
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
 		}
 		else {
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala7.countItem);
 		}
 	}
 	else if (sala == 8) {
 		if (sala8.countItem > 0) {
 			int itemSort = sala8.countItem > 1 ? rand() % sala8.countItem : 0;
 			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala8.rewardItemList[itemSort][0], sala8.rewardItemList[itemSort][1]), sala8.rewardItemList[itemSort][2], sala8.rewardItemList[itemSort][3], sala8.rewardItemList[itemSort][4], sala8.rewardItemList[itemSort][5], sala8.rewardItemList[itemSort][6], lpObj->m_Index, sala8.rewardItemList[itemSort][7]);
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
 		}
 		else {
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala8.countItem);
 		}
 	}
 	else if (sala == 9) {
 		if (sala9.countItem > 0) {
 			int itemSort = sala9.countItem > 1 ? rand() % sala9.countItem : 0;
 			ItemSerialCreateSend(lpObj->m_Index, 236, lpObj->X, lpObj->Y, ITEMGET(sala9.rewardItemList[itemSort][0], sala9.rewardItemList[itemSort][1]), sala9.rewardItemList[itemSort][2], sala9.rewardItemList[itemSort][3], sala9.rewardItemList[itemSort][4], sala9.rewardItemList[itemSort][5], sala9.rewardItemList[itemSort][6], lpObj->m_Index, sala9.rewardItemList[itemSort][7]);
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
 		}
 		else {
-			MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
+			//MsgOutput(lpObj->m_Index, "Itens para premiar: %d", sala9.countItem);
 		}
 	}
 }
@@ -807,7 +807,7 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					impMap.sala5.setBridgeGuardStrong(0);  // guardas imortais
 				}
 				else {
-					NpcOutput(lpNpc->m_Index, Id, "Ainda há algo a fazer");
+					NpcOutput(lpNpc->m_Index, Id, "Conserte o dispositivo");
 				}
 			}
 			return TRUE;
@@ -886,7 +886,7 @@ void ImperiumMap::SalaCinco::setBossStrong(int aIndex, int mobid)
 	}
 }
 
-void ImperiumMap::SalaSeis::DragonDoorProc()
+void ImperiumMap::SalaSeis::dragonDoorProc()
 {
 	this->second++;
 
@@ -1067,7 +1067,7 @@ void ImperiumMap::SalaNove::BossDeath(LPOBJ lpMonster, LPOBJ lpObj)
 			impMap.sala9.DeadBoss[Id] = true;
 			
 			MapAnnounce(18, "[Sala 09] Boss  eliminado!");
-			YellowWhispSend("Sala 09", lpObj->m_Index, "Pode ir para a sala 10!");
+			YellowWhispSend("Sala 09", lpObj->m_Index, "Pode ir para o portal");
 		}
 	}
 }
