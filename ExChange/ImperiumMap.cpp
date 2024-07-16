@@ -764,7 +764,7 @@ BOOL ImperiumMap::SalaQuatro::NPCFunc(LPOBJ lpNpc, LPOBJ lpObj)
 					}
 
 					//NpcOutput(lpNpc->m_Index, Id,"Fui consertado, pode seguir");
-					YellowWhispSend("B.Device", Id, "Fui consertado, pode seguir");
+					YellowWhispSend("BDevice", Id, "Fui consertado, pode seguir");
 					this->isCompleteQuest[Id] = true;  //libera a porta
 					this->quantMobToSort[Id] = 0;
 					this->canActivateDisp[Id] = false;
