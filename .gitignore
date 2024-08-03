@@ -355,6 +355,6 @@ Exchange/release/
 /release/*.ipobj
 /release/*.ipdb
 /release/*.lib
-/release/*.pdb
+#/release/*.pdb
 
 
