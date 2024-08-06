@@ -387,7 +387,7 @@ bool ImperiumMap::Move(LPOBJ lpObj, short lvl)
 	
 	mX = (x2 - x1) > 0 ? min(x1, x2) + rand() % (max(x1, x2) - min(x1, x2)) : 0;
 	mY = (y2 - y1) > 0 ? min(y1, y2) + rand() % (max(y1, y2) - min(y1, y2)) : 0;
-	gObjTeleport(Id, 18, mX, mY);
+	gObjTeleport(Id, 18, mX, mY); 
 	return true;
 }
 
