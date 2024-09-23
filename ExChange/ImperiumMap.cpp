@@ -391,6 +391,43 @@ bool ImperiumMap::Move(LPOBJ lpObj, short lvl)
 	return true;
 }
 
+void ImperiumMap::MoveDied(LPOBJ lpObj)
+{
+	if (lpObj->Type == OBJECT_USER) {
+		if (lpObj->Map == 18) {
+			int id = lpObj->m_Index;
+
+			if (this->sPlayer[id].diedTime >= 1)
+			{
+				this->sPlayer[id].diedTime--;
+				
+			}
+
+			if (this->sPlayer[id].diedTime == 1) {
+				if (lpObj->RegenOk == 0) {
+					this->Move(lpObj, 1);
+					
+					this->sPlayer[id].diedTime = 0;
+				}
+			}
+		}
+	}
+}
+
+void ImperiumMap::setDiedTime(LPOBJ lpObj)
+{
+	if (lpObj->Type == OBJECT_USER) {
+		if (lpObj->Map == 18) {
+			int id = lpObj->m_Index;
+
+			if (this->sPlayer[id].diedTime != 8) {
+				this->sPlayer[id].diedTime = 8;
+				
+			}
+		}
+	}
+}
+
 bool ImperiumMap::roomVerify(LPOBJ lpObj)
 {
 	if (lpObj->Type == OBJECT_USER) {

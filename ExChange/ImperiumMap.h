@@ -13,6 +13,7 @@ public:
 		long long bossKills;
 		int RoomLevel;
 		long long rankPoints;
+		int diedTime;
 	}sPlayer[1000];
 
 
@@ -137,6 +138,8 @@ public:
 	void PlayerEnterGame(LPOBJ lpObj, BYTE modo);
 	bool Move(LPOBJ lpObj, BYTE pos, short lvl);
 	bool Move(LPOBJ lpObj, short lvl);
+	void MoveDied(LPOBJ lpObj);
+	void setDiedTime(LPOBJ lpObj);
 	bool roomVerify(LPOBJ lpObj);
 	void roomPassReward(LPOBJ lpObj, int sala);
 };
