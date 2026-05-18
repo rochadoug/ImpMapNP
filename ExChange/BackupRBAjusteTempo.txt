@@ -1,0 +1,799 @@
+#include "StdAfx.h"
+CPrigFlag cPf;
+
+
+CPrigFlag::CPrigFlag()
+{
+}
+
+CPrigFlag::~CPrigFlag()
+{
+}
+
+
+void CPrigFlag::Config()
+{
+	int Token,Section = -1;
+	SMDFile = fopen(RBETXT, "r");
+	if (SMDFile == 0){
+		ExchangeMsgBox("[Rouba Bandeira] Falha ao carregar: %s", RBETXT);
+		::ExitProcess(0);
+	}
+	tCount[0] = 0;
+	tCount[1] = 0;
+	TimeRunList.clear();
+
+	while (true){
+		Token = GetToken();
+		if (Token == END){
+			break;
+		}
+		if (Token == NUMBER)
+			Section = TokenNumber;
+
+		while (true){
+			if (Section == 0){
+				Token = GetToken();
+				if (strcmpi("end", TokenString) == 0){
+					break;
+				}
+				pActive = TokenNumber; Token = GetToken();
+				pDuration = TokenNumber; Token = GetToken();
+				pLevel = TokenNumber; Token = GetToken();
+				pReset = TokenNumber;
+			}
+			else if (Section == 1) {
+				Token = GetToken();
+				if (strcmpi("end", TokenString) == 0) {
+					break;
+				}
+
+				this->tSemDay[this->tCount[0]] = TokenNumber; Token = GetToken();
+				this->tHour[this->tCount[0]] = TokenNumber; Token = GetToken();
+				this->tMin[this->tCount[0]] = TokenNumber;
+
+				if (this->tMin[this->tCount[0]] > 54)
+					this->tMin[this->tCount[0]] = 54;
+				this->tCount[0]++;
+				
+				if (this->tCount[0] > 100) {
+					break;
+				}
+				//Adicionando horarios por vector (melhor pra gerenciar)
+				RunnerTime rt;
+				rt.Day = TokenNumber; Token = GetToken();
+				rt.Hour = TokenNumber; Token = GetToken();
+				rt.Min = TokenNumber;
+				TimeRunList.push_back(rt);
+			}
+		}
+	}
+	fclose(SMDFile);
+
+	this->Load();
+}
+
+void CPrigFlag::Load()
+{
+	this->FlagStatus[0] = 0;
+	this->FlagStatus[1] = 0;
+	this->EventState = 0;
+	this->Map = 17;
+	this->CoordX[0] = 144;
+	this->CoordY[0] = 190;
+	this->CoordX[1] = 169;
+	this->CoordY[1] = 190;
+
+	ZeraGeralStatus(); // zera todos antes de iniciar
+
+	this->NumPlayers[0] = 0;
+	this->Points[0] = 0;
+
+	this->NumPlayers[1] = 0;
+	this->Points[1] = 0;
+	this->tCount[1] = 0;
+	Teams.clear();
+	Open = false;
+}
+
+void CPrigFlag::ZeraGeralStatus()
+{
+	for (int i = 4800; i < 5600; i++)
+	{
+		if (gObj[i].Type == OBJECT_USER)
+		{
+			this->ZeraPlayerStatus(i);
+		}
+	}
+}
+
+void CPrigFlag::ZeraPlayerStatus(int playerId)
+{
+	if (gObj[playerId].Type == OBJECT_USER) {
+		this->Player[playerId].Status = 0;
+		this->Player[playerId].bStat = false;
+		this->Player[playerId].Points = 0;
+		this->Player[playerId].Team = -1;
+	}
+
+}
+
+void CPrigFlag::Manage()
+{
+	if (pActive == 1) {
+
+		for (int c = 0; c < this->tCount[0]; c++) {
+
+			if (this->tSemDay[c] == sTimer.mySemDay) {
+
+				if (sTimer.myHour == this->tHour[c]) {
+
+					if (this->EventState == 0) {
+
+						if (sTimer.myMin == this->tMin[c] && sTimer.mySec == 0) //alterar pra 6 depois
+							this->Load();
+
+						int min = this->tMin[c];
+						int TempRest = sTimer.myMin == (min + 1) ? 4 : sTimer.myMin == (min + 2) ? 3 : sTimer.myMin == (min + 3) ? 2 : sTimer.myMin == (min + 4) ? 1 : 5;
+
+						if (sTimer.myMin == (this->tMin[c]) && sTimer.mySec == 0 || sTimer.myMin == (this->tMin[c] + 1) && sTimer.mySec == 1 || sTimer.myMin == (this->tMin[c] + 2) && sTimer.mySec == 1 || sTimer.myMin == (this->tMin[c] + 3) && sTimer.mySec == 1 || sTimer.myMin == (this->tMin[c] + 4) && sTimer.mySec == 1)
+						{
+							AllServerAnnounce("Rouba Bandeira começa em %d minuto(s)", TempRest);
+							MsgOutputAll("Vá a BlueFlag ou RedFlag em Lorencia");
+							Open = true;
+						}
+					}
+
+					//Início do evento
+					if (sTimer.myMin == (this->tMin[c] + 5) && sTimer.mySec == 1 && this->EventState == 0)
+					{
+						if (Teams.size() > 1)  // verifica se tem player
+						{
+							Open = false;
+							this->EventState = 1;
+							AllServerAnnounce("Rouba Bandeira Começou!!");
+							for (SPrigFlagPlayer p : Teams)
+							{
+								if (p.Team == TeamBlue)
+								{
+									p.lpObj->PkLevel = 6;
+									GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+								}
+								else
+								{
+									p.lpObj->PkLevel = 6;
+									GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+								}
+							}
+							this->DefaultMove(0); // Move todo mundo pra área segura do evento
+	
+						}
+						else
+						{
+							if (Teams.size() >= 1 && this->EventState == 0)
+							{
+								for (SPrigFlagPlayer p : Teams)
+								{
+									if (p.lpObj->Map == 17)
+										MoveGateEx(p.lpObj->m_Index, 17);
+								}
+							}
+							AllServerAnnounce("Rouba Bandeira cancelado por falta de player");
+							Load(); // se não tiver player apenas reseta tudo
+						}
+					}					
+				}
+			}
+			//Finalizando por Tempo
+			if (sTimer.myMin == ((this->tMin[c] + 5) + this->pDuration) && sTimer.mySec == 1 && this->EventState == 1) // Acabou o tempo
+			{
+				FinishWin(1);
+			}
+		}
+	}
+}
+
+void CPrigFlag::PlayerGetFlagPoint(LPOBJ lpObj)
+{
+	int aIndex = lpObj->m_Index;
+	int cont = 0;
+
+	if (this->Player[aIndex].Status == 0)
+		return;
+	
+	if (this->Player[aIndex].bStat == false)
+		return;
+	
+	if (this->Player[aIndex].Team == TeamRed && this->FlagStatus[TeamBlue] != 1)
+		return;
+	else if (this->Player[aIndex].Team == TeamBlue && this->FlagStatus[TeamRed] != 1)
+		return;
+
+	if (this->Player[aIndex].Team == TeamRed)
+	{
+		if (lpObj->Map == this->Map)
+		{
+			if (this->Player[aIndex].Status == 1)
+			{
+				if (lpObj->Y < this->CoordY[0])
+				{
+					if (this->FlagStatus[TeamBlue] == 1 && this->Player[aIndex].bStat == true)
+					{
+						//this->RewardTeam();
+						this->FlagStatus[TeamBlue] = 2;
+						this->Player[aIndex].bStat = false;
+
+						cont++;
+						if (cont == 1)
+						{
+							cont = 0;
+							this->Player[aIndex].Points++;
+							this->Points[TeamRed]++;
+
+							pObj[aIndex].Conquista[RBANDEIRA] += this->Player[aIndex].Points;
+							SQL.ExecQuery("update ConquerorNp set RBandeiraScore = %d where CharName = '%s'", pObj[aIndex].Conquista[RBANDEIRA], lpObj->Name);
+							SQL.Fetch();
+							SQL.Close();
+						}
+						
+						int id = this->GetFlagPorterIndex();
+						if (id != -1) this->Player[id].bStat = false;
+						this->FlagStatus[TeamRed] = 0;
+
+						
+						if (this->Points[0] < 5)
+						{
+							this->DefaultMove(1);
+							//MsgOutput(aIndex, "Você marcou ponto para sua equipe");
+							MsgOutputAll("[RB] %s Marcou ponto para", lpObj->Name);
+							MsgOutputAll("[RB] equipe Vermelha.Total %d", this->Points[0]);
+						}
+						else
+						{
+							//Equipe vermelha venceu
+							FinishWin(0);
+						}
+					}
+					else{
+						//faz nada
+					}
+				}
+			}
+		}
+	}
+	if (this->Player[aIndex].Team == TeamBlue)
+	{
+		if (lpObj->Map == this->Map)
+		{
+			if (this->Player[aIndex].Status == 1)
+			{
+				if (lpObj->Y > this->CoordY[0])
+				{
+					if (this->FlagStatus[TeamRed] == 1 && this->Player[aIndex].bStat == true)
+					{			
+						this->Player[aIndex].bStat = false;
+						cont++;
+						if (cont == 1){
+							cont = 0;
+							this->Player[aIndex].Points++;
+							this->Points[TeamBlue]++;
+							this->FlagStatus[TeamRed] = 2;
+
+							pObj[aIndex].Conquista[RBANDEIRA] += this->Player[aIndex].Points;
+							SQL.ExecQuery("update ConquerorNp set RBandeiraScore = %d where CharName = '%s'", pObj[aIndex].Conquista[RBANDEIRA], lpObj->Name);
+							SQL.Fetch();
+							SQL.Close();
+						}
+						
+						int id = this->GetFlagPorterIndex();
+						if (id != -1) this->Player[id].bStat = false;
+						this->FlagStatus[TeamBlue] = 0;
+
+						if (this->Points[1] < 5)
+						{
+							this->DefaultMove(1);
+							//MsgOutput(aIndex, "Você marcou ponto para sua equipe");
+							MsgOutputAll("[RB] %s Marcou ponto para", lpObj->Name);
+							MsgOutputAll("[RB] equipe Azul.Total %d", this->Points[1]);
+						}
+						else
+						{
+							///Equipe azul venceu
+							FinishWin(0);
+						}
+					}
+				}
+			}
+		}
+	}
+	//Função intrusa^^ Só pra mover o player
+	//this->MoveDiePlayer(aIndex);
+}
+
+bool CPrigFlag::AttackGerence(LPOBJ lpObj, LPOBJ lpTarg)
+{
+	int Ob = lpObj->m_Index;
+	int Tg = lpTarg->m_Index;
+	bool Return = true;
+	if (this->EventState == 1)
+	{
+		if (this->Player[Ob].Status == 1 && this->Player[Tg].Status == 1)
+		{
+			if (lpObj->Map == this->Map && lpTarg->Map == this->Map)
+			{
+				if (lpObj->Y > this->CoordY[0] && this->Player[Ob].Team == TeamRed)
+				{
+					Return = false;
+				}
+				else if (lpObj->Y < this->CoordY[0] && this->Player[Ob].Team == TeamBlue)
+				{
+					Return = false;
+				}
+				else if (this->Player[Ob].Team == TeamRed && this->Player[Tg].Team == TeamRed || this->Player[Ob].Team == TeamBlue && this->Player[Tg].Team == TeamBlue)
+				{
+					Return = false;
+				}
+			}
+		}
+	}
+	return Return;
+}
+
+int CPrigFlag::GetFlagPorterIndex()
+{
+	int id = -1;
+	if (this->EventState == 1)
+	{
+		for (int p = 4800; p < 5600; p++)
+		{
+			if (gObj[p].Connected == 3)
+			{
+				if (this->Player[p].Status == 1 && this->Player[p].bStat != 0)
+				{
+					id = p;
+				}
+			}
+		}
+	}
+	return id;
+}
+
+void CPrigFlag::FlagNPCClick(LPOBJ lpNpc, LPOBJ lpPlayer)
+{
+	int aIndex = lpPlayer->m_Index, nIndex = lpNpc->m_Index;
+
+	if (this->EventState == 1) // evento rolando
+	{
+		if (lpNpc->Class == 220) // redFlag
+		{
+			
+			if (this->Player[aIndex].Status == 1 && this->Player[aIndex].Team == TeamBlue)
+			{
+				if (this->FlagStatus[TeamRed] == 0) // bandeira red ja foi pega?
+				{
+					this->FlagStatus[0] = 1;
+					this->Player[aIndex].bStat = true;
+					NpcOutput(nIndex, aIndex, "Corra para o seu campo!");
+					MsgOutputAll("[RB]%s está com a bandeira %s", gObj[aIndex].Name, this->Player[aIndex].Team == TeamBlue? "Vermelha" : "Azul");
+				}
+				else
+				{
+					int id = this->GetFlagPorterIndex();
+					if(id != aIndex)
+						NpcOutput(nIndex, aIndex, "%s já pegou a Bandeira.",gObj[id].Name);
+					else
+						NpcOutput(nIndex, aIndex, "Corra para o seu campo!");
+				}
+			}
+		}
+
+		if (lpNpc->Class == 221) // blueFlag
+		{
+			
+			if (this->Player[aIndex].Status == 1 && this->Player[aIndex].Team == TeamRed)
+			{
+				if (this->FlagStatus[TeamBlue] == 0)
+				{
+					this->FlagStatus[TeamBlue] = 1;
+					this->Player[aIndex].bStat = true;
+					NpcOutput(nIndex, aIndex, "Corra para o seu campo!");
+					MsgOutputAll("[RB]%s está com a bandeira %s", gObj[aIndex].Name, this->Player[aIndex].Team == TeamRed ? "Azul" : "Vermelha");
+				}
+				else
+				{
+					int id = this->GetFlagPorterIndex();
+					if (id != aIndex)
+						NpcOutput(nIndex, aIndex, "%s já pegou a Bandeira.", gObj[id].Name);
+					else
+						NpcOutput(nIndex, aIndex, "Corra para o seu campo!");
+				}
+			}
+		}
+	}
+}
+
+void CPrigFlag::DefaultMove(short t)  // adapta ele pra mover ao iniciar evento
+{
+	int x, y;
+	if (this->EventState == 1)
+	{
+
+		for (int p = 4800; p < 5600; p++)
+		{
+			LPOBJ lpObj = &gObj[p];
+
+			if (lpObj->Map == this->Map)
+			{
+				if (this->Player[p].Status == 1)
+				{
+					list<LPOBJ> lista;  // criei lista
+					//lista.clear();
+
+					lista.push_front(lpObj);   // insiro os players do evento nela
+					
+					if (t == 1)
+					{
+						if (lpObj->RegenOk == 0)
+						{
+							x = rand() % 6;
+							y = rand() % 3;
+
+							for (LPOBJ Lp : lista)   //pego todos da lista
+							{
+								int id = Lp->m_Index;   // pego pela list (só pra diminuir digitação kkk)
+
+								if (this->Player[id].Team == TeamRed)  // comparo id do time red
+								{
+									gObjTeleport(id, this->Map, 152 + x, 165 + y); // move
+								}
+								if (this->Player[id].Team == TeamBlue) // comparo id do time blue
+								{
+									gObjTeleport(id, this->Map, 152 + x, 215 - y);   // move
+								}
+							}
+							this->FlagStatus[0] = 0;  // zera status das bandeiras
+							this->FlagStatus[1] = 0;
+						}
+
+					}
+					else if (t == 0)  // Mover quando começar evento
+					{
+						if (lpObj->RegenOk == 0)
+						{
+							x = rand() % 6;
+							y = rand() % 3;
+
+							for (LPOBJ Lp : lista)   //pego todos da lista
+							{
+								int id = Lp->m_Index;   // pego pela list (só pra diminuir digitação kkk)
+
+								if (this->Player[id].Team == TeamRed)  // comparo id do time red
+								{
+									gObjTeleport(id, this->Map, 142, 185); // esse move para area de inicio dos times para começar evento
+								}
+								if (this->Player[id].Team == TeamBlue) // comparo id do time blue
+								{
+									gObjTeleport(id, this->Map, 142, 195); // esse move para area de inicio dos times para começar evento
+								}
+							}
+							this->FlagStatus[0] = 0;  // zera status das bandeiras
+							this->FlagStatus[1] = 0;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+bool CPrigFlag::BlockTeleportSM(LPOBJ lpObj)
+{
+	bool Return = true;
+	int aIndex = lpObj->m_Index;
+	
+	if (this->EventState == 1){
+		if (this->Player[aIndex].Status == 1 && lpObj->Map == this->Map){
+			
+			Return = false;
+		}
+		else {
+			Return = true;
+		}
+	}
+	return Return;
+}
+
+void CPrigFlag::MoveDiePlayer(int id)
+{
+	if (pActive == 1) {
+		LPOBJ lpObj = &gObj[id];
+		if (this->EventState == 1)
+		{
+			if (this->Player[id].Status == 1)
+			{
+
+				if (this->Player[id].DieMove >= 2)
+				{
+					this->Player[id].DieMove--;
+				}
+
+				if (this->Player[id].DieMove == 1)
+				{
+					if (lpObj->Type == OBJECT_USER && lpObj->Connected ==3) {
+						if (lpObj->RegenOk == 0)
+						{
+							if (this->Player[id].Team == TeamBlue)
+								gObjTeleport(id, this->Map, 142, 195);
+							else if (this->Player[id].Team == TeamRed)
+								gObjTeleport(id, this->Map, 142, 185);
+						}
+					}
+					this->Player[id].DieMove = 0;
+				}
+			}
+		}
+	}
+}
+
+void CPrigFlag::DiePlayer(LPOBJ lpObj, LPOBJ lpTarg)
+{
+	int id = lpObj->m_Index;
+	int it = lpTarg->m_Index;
+	if (this->EventState == 1)
+	{
+		if (this->Player[id].Status == 1 && this->Player[it].Status == 1)
+		{
+			if (this->Player[id].Team == TeamBlue && this->Player[it].Team == TeamRed || this->Player[id].Team == TeamRed && this->Player[it].Team == TeamBlue)
+			{
+				this->Player[it].DieMove = 7;
+
+				if (this->Player[it].bStat != false) // se ele tiver com a bandeira tira dele e devolve pro npc
+				{
+					this->Player[it].bStat = false;
+					this->FlagStatus[this->Player[id].Team] = 0;
+				}
+			}
+		}
+	}
+}
+
+
+void CPrigFlag::PlayerOutEvent(LPOBJ lpObj)
+{
+	if (this->Player[lpObj->m_Index].Status == 1)
+	{
+		ZeraPlayerStatus(lpObj->m_Index);
+		Teams.remove(this->Player[lpObj->m_Index]);
+		FinishWin(2); //W.O
+	}
+}
+
+void CPrigFlag::PlayerGoRB(LPOBJ lpObj)
+{
+	if (pActive == 1) {
+		if (lpObj->Connected == 3)
+		{
+			if (Open == true)
+			{
+				if (Player[lpObj->m_Index].Status == 0)
+				{
+					if (lpObj->Level < pLevel) {
+						MsgOutput(lpObj->m_Index, "Precisa estar acima do level %d", pLevel);
+						return;
+					}
+					if (pObj[lpObj->m_Index].mResets < pReset) {
+						MsgOutput(lpObj->m_Index, "Precisa ter mais de %d resets", pReset);
+						return;
+					}
+					if (Teams.size() < 16)
+					{
+						int CountRed = this->CountTeamPlayer(TeamRed);
+						int CountBlue = this->CountTeamPlayer(TeamBlue);
+
+						if (CountRed > CountBlue){
+							this->Player[lpObj->m_Index].Team = TeamBlue;
+							this->Player[lpObj->m_Index].Status = 1;
+							this->Player[lpObj->m_Index].lpObj = lpObj;
+							
+						}
+						else if (CountBlue > CountRed){
+							this->Player[lpObj->m_Index].Team = TeamRed;
+							this->Player[lpObj->m_Index].Status = 1;
+							this->Player[lpObj->m_Index].lpObj = lpObj;			
+						}
+						else{ // if (this->CountTeamPlayer(TeamRed) == this->CountTeamPlayer(TeamBlue)
+							this->Player[lpObj->m_Index].Team = (rand() % 2);
+							this->Player[lpObj->m_Index].Status = 1;
+							this->Player[lpObj->m_Index].lpObj = lpObj;
+						}
+
+						Teams.push_back(this->Player[lpObj->m_Index]);
+
+						MsgOutput(lpObj->m_Index, "Você é da equipe %s", this->Player[lpObj->m_Index].Team == TeamRed ? "Vermelha" : "Azul");
+
+						if (this->Player[lpObj->m_Index].Team == TeamRed)  // comparo id do time red
+						{
+							gObjTeleport(lpObj->m_Index, this->Map, 142, 185); // esse move para area de inicio dos times para começar evento
+						}
+						if (this->Player[lpObj->m_Index].Team == TeamBlue) // comparo id do time blue
+						{
+							gObjTeleport(lpObj->m_Index, this->Map, 142, 195); // esse move para area de inicio dos times para começar evento
+						}
+
+					}
+					else
+					{
+						MsgOutput(lpObj->m_Index, "Máximo de 16 participantes no evento");
+					}
+				}
+				else
+				{
+					MsgOutput(lpObj->m_Index, "Você já está no evento");
+				}
+			}
+			else
+			{
+				if (this->EventState == 0)
+				{	
+					int count = 0;
+					for (int c = 0; c < this->tCount[0]; c++) {
+						count++;
+						if (count == 1) {
+							if (this->tSemDay[c] == sTimer.mySemDay) {
+
+								MsgOutput(lpObj->m_Index, "Rouba Bandeira às %02d:%02d", this->tHour[c], this->tMin[c]);
+							}
+							else {
+								MsgOutput(lpObj->m_Index, "Aguarde o próximo Rouba Bandeira");
+							}
+						}
+					}										
+				}
+				else
+					MsgOutput(lpObj->m_Index, "Rouba Bandeira já está em andamento");
+			}
+		}
+	}
+	else {
+		MsgOutput(lpObj->m_Index, "Rouba Bandeira desativado.");
+	}
+}
+
+int CPrigFlag::CountTeamPlayer(short t)
+{
+	int count = 0;
+
+	for (int p = 4800; p < 5600; p++)
+	{
+		LPOBJ lpObj = &gObj[p];
+
+		if (lpObj->Map == this->Map)
+		{
+			if (this->Player[p].Status == 1)
+			{
+				if (this->Player[p].Team == t)
+				{
+					count++;   // insiro os players na lista
+				}
+			}
+		}
+	}
+	
+	return count;
+}
+
+void CPrigFlag::FinishWin(BYTE mode)
+{
+	if (this->EventState == 1)
+	{
+		if (mode == 0)  //Chegou até 5 pontos
+		{
+			if (this->Points[0] >= 5 && this->Points[1] < 5)
+			{
+				AllServerAnnounce("[RB] Equipe Vermelha venceu");
+				for (SPrigFlagPlayer p : Teams)
+				{
+					p.lpObj->PkLevel = 3;
+					GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+					MoveGateEx(p.lpObj->m_Index, 17);
+				}
+				this->Load(); // reseta tudo
+
+			}
+			else if (this->Points[1] >= 5 && this->Points[0] < 5)
+			{
+				AllServerAnnounce("[RB] Equipe Azul venceu");
+				for (SPrigFlagPlayer p : Teams)
+				{
+					p.lpObj->PkLevel = 3;
+					GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+					MoveGateEx(p.lpObj->m_Index, 17);
+				}
+				this->Load(); // reseta tudo
+			}
+		}
+		else if (mode == 1) // Acabou o tempo
+		{
+			
+			if (this->Points[0] > this->Points[1])
+			{
+				AllServerAnnounce("[RB] Equipe Vermelha venceu por tempo");
+
+				for (SPrigFlagPlayer p : Teams)
+				{
+					p.lpObj->PkLevel = 3;
+					GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+					MoveGateEx(p.lpObj->m_Index, 17);
+				}
+				this->Load(); // reseta tudo
+			}
+			else if (this->Points[0] < this->Points[1])
+			{
+				AllServerAnnounce("[RB] Equipe Azul venceu por tempo");	
+
+				for (SPrigFlagPlayer p : Teams)
+				{
+					p.lpObj->PkLevel = 3;
+					GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+					MoveGateEx(p.lpObj->m_Index, 17);
+				}
+				this->Load(); // reseta tudo
+			}
+			else
+			{
+				AllServerAnnounce("Rouba Bandeira terminou em empate.");
+
+				for (SPrigFlagPlayer p : Teams)
+				{
+					p.lpObj->PkLevel = 3;
+					GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+					MoveGateEx(p.lpObj->m_Index, 17);
+				}
+				this->Load(); // reseta tudo
+			}			
+		}
+		else if (mode == 2)  // Players saíram: W.O
+		{
+			this->NumPlayers[0] = CountTeamPlayer(TeamRed);  // Recontagem de player no time vermelho
+			this->NumPlayers[1] = CountTeamPlayer(TeamBlue);  // Recontagem de player no time azul
+
+			if (this->NumPlayers[TeamRed] > this->NumPlayers[TeamBlue])
+			{
+				if (myGetDiferenceValue(this->NumPlayers[TeamRed], this->NumPlayers[TeamBlue]) > 3 || this->NumPlayers[TeamBlue] == 0)
+				{
+					AllServerAnnounce("[RB] Equipe Vermelha venceu por W.O");
+
+					for (SPrigFlagPlayer p : Teams)
+					{
+						p.lpObj->PkLevel = 3;
+						GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+						MoveGateEx(p.lpObj->m_Index, 17);
+					}
+					this->Load(); // reseta tudo
+				}
+			}
+			else if (this->NumPlayers[TeamBlue] > this->NumPlayers[TeamRed])
+			{
+				if (myGetDiferenceValue(this->NumPlayers[TeamRed], this->NumPlayers[TeamBlue]) > 3 || this->NumPlayers[TeamRed] == 0)
+				{
+					AllServerAnnounce("[RB] Equipe Azul venceu por W.O");
+					
+					for (SPrigFlagPlayer p : Teams)
+					{
+						p.lpObj->PkLevel = 3;
+						GCPkLevelSend(p.lpObj->m_Index, p.lpObj->PkLevel);
+
+						MoveGateEx(p.lpObj->m_Index, 17);
+					}
+					this->Load(); // reseta tudo
+				}
+			}
+		}
+	}
+}

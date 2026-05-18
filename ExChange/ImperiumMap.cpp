@@ -1199,8 +1199,8 @@ void ImperiumMap::SalaNove::Gate(int aIndex, int gate)
 			ItemSerialCreateSend(aIndex, 18, 213, 204, iTeleport, 12, 0, 0, 0, 0, aIndex, 0);
 			impMap.roomPassReward(lpObj, 9);
 			AllServerAnnounce("[Mapa Imperium] %s Finalizou todas as quests!", lpObj->Name);
-			MySQL.ExecQuery("UPDATE Character SET ImpMapRank = ImpMapRank + 1 where Name = '%s'", lpObj->Name);
-			MySQL.Fetch();
+			SQL.ExecQuery("UPDATE Character SET ImpMapRank = ImpMapRank + 1 where Name = '%s'", lpObj->Name);
+			SQL.Fetch();
 		}
 	}
 }
